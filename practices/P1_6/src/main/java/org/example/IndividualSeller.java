@@ -1,7 +1,7 @@
 package org.example;
 import java.util.Scanner;
 
-public class Seller {
+public class IndividualSeller {
     private String modify(String manufacturer) {
         // Замена символов 'o' на 'a'
         String modifiedManufacturer = manufacturer.replaceAll("o", "a");
@@ -23,7 +23,7 @@ public class Seller {
         String manufacturer = scanner.nextLine();
 
         Telephone phone = new Telephone(manufacturer);
-        Seller seller = new Seller();
+        IndividualSeller seller = new IndividualSeller();
         String modifiedManufacturer = seller.modify(phone.getManufacturer());
 
         System.out.println("The original name: " + phone.getManufacturer());

@@ -2,6 +2,7 @@ package org.example;
 
 public class Individual {
     public static void main(String[] args) {
+        System.out.println("Bondarew Alexey Petrovich RIBO-03-22, variant 2");
         PhoneHeap myHeap = new PhoneHeap();
         myHeap.addPhone(new Telephone("Panasonic", "X35235ZMD", "white", false));
         myHeap.addPhone(new Telephone("Panasonic", "X35235ZMD", "white", false));

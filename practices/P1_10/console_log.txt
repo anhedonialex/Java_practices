@@ -1,0 +1,20 @@
+14:34:28: Executing ':Individual.main()'...
+
+> Task :compileJava UP-TO-DATE
+> Task :processResources NO-SOURCE
+> Task :classes UP-TO-DATE
+
+> Task :Individual.main()
+Enter path to file to reverse contents
+C:\Bondarew\individual.txt
+File modification successful. Output file: C:\Bondarew\individual_reversed.txt
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.4/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 29s
+2 actionable tasks: 1 executed, 1 up-to-date
+14:34:58: Execution finished ':Individual.main()'.

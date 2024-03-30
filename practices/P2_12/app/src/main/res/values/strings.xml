@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">P2_12</string>
+    <string name="name">Имя</string>
+    <string name="lname">Фамилия</string>
+    <string name="age">Возраст</string>
+    <string name="model">Модель</string>
+    <string name="serial">Серийный номер</string>
+    <string name="price">Цена</string>
+    <string name="add">Добавить</string>
+    <string name="next">Продолжить</string>
+    <string name="incorrect_value">Вы ввели некорректное значение</string>
+    <string name="insert_error">При добавлении произошла ошибка</string>
+    <string name="insert_success">Запись успешно добавлена</string>
+    <string name="myname">Вариант 2 Бондарев Алексей Петрович РИБО-03-22</string>
+</resources>

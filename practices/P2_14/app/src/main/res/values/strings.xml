@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">P2_14</string>
+    <string name="save">Сохранить</string>
+    <string name="load">Загрузить</string>
+    <string name="enter_text">Введите текст</string>
+    <string name="no_empty_field">Поле ввода не может быть пустым</string>
+
+</resources>

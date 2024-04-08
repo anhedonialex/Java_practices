@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">P2_16</string>
+    <string name="show_notification">Показать уведомление</string>
+    <string name="start_service">Запуск сервиса</string>
+    <string name="stop_service">Остановка сервиса</string>
+    <string name="cancel_notification">Убрать уведомление</string>
+    <string name="lang_change">Смена языка</string>
+</resources>

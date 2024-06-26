@@ -265,7 +265,79 @@ public class Main  {
 11. **Реализовать мобильное приложение в Android Studio, которое складывает два целых числа, введенных пользователем в поля ввода (EditText). Результат вычисления необходимо отобразить в виджете TextView после нажатия на кнопку (Button) и отобразить в лог. В макете activity разрешено использовать контейнеры только одного типа: LinearLayout. В приложении необходимо использовать Library Data Binding для привязки виджетов. Проверки на некорректные значения – обязательны!** 
     
 12. **Реализовать мобильное приложение в Android Studio, состоящее из двух activity, таким образом, чтобы в первую activity вернулся результат математической операции из второй activity. Подробнее: Вторая activity запускается по нажатию на кнопку (Button) в первой activity. Во второй activity пользователь вводит числовое значение в EditText. Далее это значение возводится в степень 2. Пользователь нажимает на кнопку (Button) и приложение возвращается в первую activity и отображает в поле TextView вычисленное значение. Проверки на некорректные значения – обязательны!** 
-    
+    MainActivity.java
+    ```java
+    package com.mirea.kt.ribo.test;  
+  
+import android.content.Intent;  
+import android.os.Bundle;  
+import android.view.View;  
+import android.widget.Button;  
+import android.widget.TextView;  
+  
+import androidx.annotation.Nullable;  
+import androidx.appcompat.app.AppCompatActivity;  
+  
+public class MainActivity extends AppCompatActivity {  
+    @Override  
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {  
+        super.onActivityResult(requestCode, resultCode, data);  
+        if (data == null) {  
+            return;  
+        }  
+        int value = data.getIntExtra("VALUE", 0);  
+        TextView textView = findViewById(R.id.text);  
+        textView.setText(String.valueOf(value));  
+    }  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+        Button button = findViewById(R.id.button);  
+        button.setOnClickListener(new View.OnClickListener() {  
+            @Override  
+            public void onClick(View v) {  
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);  
+                startActivityForResult(intent, 1);  
+            }  
+        });  
+    }  
+}
+```
+SecondActivity.java
+```java
+package com.mirea.kt.ribo.test;  
+  
+import android.content.Intent;  
+import android.os.Bundle;  
+import android.widget.Button;  
+import android.widget.EditText;  
+  
+import androidx.appcompat.app.AppCompatActivity;  
+  
+public class SecondActivity extends AppCompatActivity {  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_second);  
+  
+        EditText editText = findViewById(R.id.editText);  
+        Button calcButton = findViewById(R.id.button);  
+  
+        calcButton.setOnClickListener(v -> {  
+            if (editText.getText().length() > 0){  
+                int value = Integer.parseInt(editText.getText().toString());  
+                Intent intent = new Intent(SecondActivity.this, MainActivity.class);  
+                intent.putExtra("VALUE", value*value);  
+                setResult(RESULT_OK, intent);  
+                finish();  
+            }  
+        });  
+    }  
+}
+```
 13. **Реализовать мобильное приложение в Android Studio, с помощью которого по нажатию на картинку (ImageView) можно поделиться текстом из виджета EditText через другое приложение (мессенджеры, смс и т.п.). В приложении необходимо использовать Library Data Binding для привязки виджетов. Картинка для imageView: https://goo.su/TpgLD9l.** 
     
 14. **Реализовать мобильное приложение в Android Studio, в котором по нажатию на кнопку (Button) будет заменяться содержимое экрана, расположенного ниже кнопки. При выполнении задания обязательно использовать фрагменты (динамическая регистрация). Содержимое экранов может быть любое.** 

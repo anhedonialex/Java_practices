@@ -1,3 +1,0 @@
-Reversed: !dlrow ,olleH
-Minus first 'n' last: ello, world
-Upper: HELLO, WORLD!

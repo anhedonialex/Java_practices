@@ -1,7 +1,6 @@
 1. **Реализовать Java-программу в Apache NetBeans IDE, которая преобразовывает введенную пользователем с клавиатуры строку:  разворот строки;  удаление первого и последнего символа в строке;  перевод строки в верхний регистр. Три новых преобразованных строки необходимо сохранить в текстовый файл.** 
 
 2. **Реализовать Java-программу в Apache NetBeans IDE, которая вычисляет максимальное и минимальное число из введенных пользователем с клавиатуры числовых значений через запятую. Результаты отображаются в консоли. В решении необходимо использовать цикл while. Проверки на некорректные значения – обязательны!** 
-
 ```java
 public class Main {
     public static void main(String[] args) {
@@ -43,7 +42,63 @@ public class Main {
 3. **Реализовать Java-программу в Apache NetBeans IDE, выполняющую вывод в консоль сортированных по имени сущностей типа Person (объекты хранятся в ArrayList). Помимо имени, класс Person должен содержать еще 3 переменных класса. В решении необходимо использовать интерфейс Comparable. Заполнение коллекции выполняется пользователем с клавиатуры во время выполнения программы (минимум 3 элемента коллекции).** 
 
 4. **Реализовать Java-программу в Apache NetBeans IDE, выполняющую вывод в консоль отсортированного по значению ключа HashMap (ключ – типа String). Заполнение HashMap выполняется пользователем с клавиатуры во время выполнения программы (минимум 5 значений). Необходимо предусмотреть проверки на некорректные значения и обработку исключений.**
-   
+   ```java
+   package org.example;  
+  
+import java.util.*;  
+  
+public class Main {  
+    public static void main(String[] args) {  
+        Map<String, String> hashMap = new HashMap<>();  
+        Scanner scanner = new Scanner(System.in);  
+  
+        System.out.println("Input HashMap quantity: ");  
+        int quantity = 0;  
+        boolean valueIsInt = false;  
+        while (!valueIsInt){  
+            try{  
+                quantity = Integer.parseInt(scanner.nextLine());  
+                valueIsInt = true;  
+            }catch (NumberFormatException e){  
+                System.out.println("Try again: ");  
+                quantity = 3;  
+            }  
+        }  
+  
+  
+        System.out.print("Введите ключ - значение через пробел:\n");  
+        for (int i = 0; i < quantity; i++) {  
+            System.out.print(i+1 + "key-value: ");  
+            String input = scanner.nextLine();  
+            String[] keyValues = input.split(" ");  
+            if (keyValues.length<2){  
+                boolean inputCorrected = false;  
+                while (!inputCorrected){  
+                    System.out.println("Try again: ");  
+                    input = scanner.nextLine();  
+                    keyValues = input.split(" ");  
+                    if (keyValues.length>=2){  
+                        inputCorrected = true;  
+                    }  
+                }  
+            }  
+            String key = keyValues[0];  
+            String value = keyValues[1];  
+            hashMap.put(key, value);  
+        }  
+  
+        Map<String, String> sortedMap = new TreeMap<>(hashMap);  
+  
+        System.out.println("Отсортированный по ключу HashMap:");  
+        for (Map.Entry<String, String> entry : sortedMap.entrySet()) {  
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());  
+        }  
+  
+        scanner.close();  
+    }  
+}
+```
+
 5. **Реализовать Java-программу в Apache NetBeans IDE, которая загружает содержимое текстового файла, удаляет все гласные буквы и выводит полученное значение в консоль. Путь к файлу вводит пользователь с клавиатуры. Проверки на некорректные значения – обязательны!** 
    
 6. **Реализовать Java-программу в Apache NetBeans IDE, которая сериализует в файл экземпляр класса сущности Message (класс должен содержать минимум 3 переменных). Путь к файлу вводит пользователь с клавиатуры.** 

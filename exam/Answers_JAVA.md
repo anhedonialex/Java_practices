@@ -102,7 +102,63 @@ public class Main {
 5. **Реализовать Java-программу в Apache NetBeans IDE, которая загружает содержимое текстового файла, удаляет все гласные буквы и выводит полученное значение в консоль. Путь к файлу вводит пользователь с клавиатуры. Проверки на некорректные значения – обязательны!** 
    
 6. **Реализовать Java-программу в Apache NetBeans IDE, которая сериализует в файл экземпляр класса сущности Message (класс должен содержать минимум 3 переменных). Путь к файлу вводит пользователь с клавиатуры.** 
-   
+   Main.java
+   ```java
+   package org.example;  
+  
+import java.io.FileOutputStream;  
+import java.io.IOException;  
+import java.io.ObjectOutputStream;  
+import java.util.*;  
+  
+public class Main {  
+    public static void main(String[] args) {  
+  
+        Scanner scanner = new Scanner(System.in);  
+  
+        System.out.print("Введите путь к файлу для сохранения объекта: ");  
+        String filePath = scanner.nextLine();  
+  
+        Message message = new Message("Alice", "Bob", "Hello, how are you?");  
+  
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filePath))) {  
+            outputStream.writeObject(message);  
+            System.out.println("Сообщение успешно сериализовано в файл: " + filePath);  
+        } catch (IOException e) {  
+            System.out.println("Ошибка при записи файла: " + e.getMessage());  
+        }  
+  
+        scanner.close();  
+    }  
+}
+```
+Message.java
+```java
+package org.example;  
+  
+import java.io.Serializable;  
+  
+public class Message implements Serializable {  
+    private final String sender;  
+    private final String receiver;  
+    private final String content;  
+  
+    public Message(String sender, String receiver, String content) {  
+        this.sender = sender;  
+        this.receiver = receiver;  
+        this.content = content;  
+    }  
+  
+    @Override  
+    public String toString() {  
+        return "Message{" +  
+                "sender='" + sender + '\'' +  
+                ", receiver='" + receiver + '\'' +  
+                ", content='" + content + '\'' +  
+                '}';  
+    }  
+}
+```
 7. **Реализовать Java-программу в Apache NetBeans IDE, которая вычисляет площадь прямоугольника в отдельном потоке и выводит результат в консоль. Создание потока должно быть реализовано с использованием интерфейса Runnable. Значения сторон вводит пользователь с клавиатуры. Проверки на некорректные значения – обязательны!** 
    
 8. **Реализовать Java-программу в Apache NetBeans IDE, которая вычисляет в отдельном потоке факториал введенного пользователем числа с клавиатуры и выводит полученное значение в консоль. Необходимо использовать цикл while. Создание потока должно быть реализовано с использованием наследника класса Thread. Проверки на некорректные значения – обязательны!**

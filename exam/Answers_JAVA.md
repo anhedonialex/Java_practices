@@ -207,7 +207,61 @@ public class Main extends Thread {
 9. **Дан исходный код Java-программы. При запуске программы (а также в ходе работы), возникают ошибки. Провести отладку программы (debugging), выявить в каких участках программы возникают ошибки, исправить их, запустить рабочий вариант. В данном задании проверяются знания темы обработки исключений, а также умение работы с отладчиком Apache NetBeans IDE. Загрузите программу по адресу: https://goo.su/MAN2U Программа считывает число с клавиатуры, проводит математические операции и отправляет некоторое значение на сервер. Сервер возвращает измененное число. Приложение содержит ошибки компиляции, также в приложении могут возникнуть ошибки при неправильной эксплуатации. Задача исправить ошибки и предусмотреть обработку ошибок в «уязвимых» участках кода.** 
    
 10. **Реализовать Java-программу в Apache NetBeans IDE, которая сохраняет в файл содержимое веб-страницы, адрес которой вводит пользователь с клавиатуры. Использование многопоточности – обязательно.** 
-    
+    ```java
+    package org.example;  
+  
+import java.io.*;  
+import java.net.MalformedURLException;  
+import java.net.URL;  
+import java.util.*;  
+import java.util.concurrent.ExecutorService;  
+import java.util.concurrent.Executors;  
+  
+public class Main  {  
+  
+  
+    public static void main(String[] args) {  
+        ExecutorService executor = Executors.newFixedThreadPool(5);  
+  
+        Scanner scanner = new Scanner(System.in);  
+        System.out.print("Введите URL веб-страницы для загрузки информации: ");  
+        String url = scanner.nextLine();  
+  
+        executor.submit(() -> {  
+            downloadWebPage(url);  
+        });  
+  
+        executor.shutdown();  
+    }  
+  
+    private static void downloadWebPage(String url) {  
+        try {  
+  
+            URL webpageURL = new URL(url);  
+            BufferedReader reader = new BufferedReader(new InputStreamReader(webpageURL.openStream()));  
+  
+            StringBuilder content = new StringBuilder();  
+            String line;  
+            while ((line = reader.readLine()) != null) {  
+                content.append(line);  
+            }  
+            reader.close();  
+  
+            File file = new File("downloadedPage.html");  
+            FileWriter writer = new FileWriter(file);  
+            writer.write(content.toString());  
+            writer.close();  
+  
+            System.out.println("Содержимое веб-страницы успешно сохранено в файл downloadedPage.html");  
+  
+        } catch (MalformedURLException e) {  
+            System.out.println("Неверный URL адрес веб-страницы: " + e.getMessage());  
+        } catch (IOException e) {  
+            System.out.println("Ошибка при загрузке веб-страницы: " + e.getMessage());  
+        }  
+    }  
+}
+```
 11. **Реализовать мобильное приложение в Android Studio, которое складывает два целых числа, введенных пользователем в поля ввода (EditText). Результат вычисления необходимо отобразить в виджете TextView после нажатия на кнопку (Button) и отобразить в лог. В макете activity разрешено использовать контейнеры только одного типа: LinearLayout. В приложении необходимо использовать Library Data Binding для привязки виджетов. Проверки на некорректные значения – обязательны!** 
     
 12. **Реализовать мобильное приложение в Android Studio, состоящее из двух activity, таким образом, чтобы в первую activity вернулся результат математической операции из второй activity. Подробнее: Вторая activity запускается по нажатию на кнопку (Button) в первой activity. Во второй activity пользователь вводит числовое значение в EditText. Далее это значение возводится в степень 2. Пользователь нажимает на кнопку (Button) и приложение возвращается в первую activity и отображает в поле TextView вычисленное значение. Проверки на некорректные значения – обязательны!** 

@@ -1,39 +1,55 @@
 package org.example;
 
-import java.util.Scanner;
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class Main {
+public class Main  {
+
+
     public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(5);
 
         Scanner scanner = new Scanner(System.in);
+        System.out.print("Введите URL веб-страницы для загрузки информации: ");
+        String url = scanner.nextLine();
 
-        System.out.println("Введите числовые значения через запятую:");
-        String input = scanner.nextLine();
+        executor.submit(() -> {
+            downloadWebPage(url);
+        });
 
-        String[] numbers = input.split(",");
+        executor.shutdown();
+    }
 
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
+    private static void downloadWebPage(String url) {
+        try {
 
-        int i = 0;
-        while (i < numbers.length) {
-            try {
-                int num = Integer.parseInt(numbers[i].trim());
-                min = Math.min(min, num);
-                max = Math.max(max, num);
-                i++;
-            } catch (NumberFormatException e) {
-                System.out.println("Некорректное значение, введите числовые значения через запятую:");
-                input = scanner.nextLine();
-                numbers = input.split(",");
-                i = 0;
-                min = Integer.MAX_VALUE;
-                max = Integer.MIN_VALUE;
+            URL webpageURL = new URL(url);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(webpageURL.openStream()));
+
+            StringBuilder content = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
             }
+            reader.close();
+
+            File file = new File("downloadedPage.html");
+            FileWriter writer = new FileWriter(file);
+            writer.write(content.toString());
+            writer.close();
+
+            System.out.println("Содержимое веб-страницы успешно сохранено в файл downloadedPage.html");
+
+        } catch (MalformedURLException e) {
+            System.out.println("Неверный URL адрес веб-страницы: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Ошибка при загрузке веб-страницы: " + e.getMessage());
         }
-
-        System.out.println("Минимальное число: " + min);
-        System.out.println("Максимальное число: " + max);
-
     }
 }
+
+

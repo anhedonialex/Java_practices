@@ -1,7 +1,6 @@
 1. **Реализовать Java-программу в Apache NetBeans IDE, которая преобразовывает введенную пользователем с клавиатуры строку:  разворот строки;  удаление первого и последнего символа в строке;  перевод строки в верхний регистр. Три новых преобразованных строки необходимо сохранить в текстовый файл.** 
 
 2. **Реализовать Java-программу в Apache NetBeans IDE, которая вычисляет максимальное и минимальное число из введенных пользователем с клавиатуры числовых значений через запятую. Результаты отображаются в консоли. В решении необходимо использовать цикл while. Проверки на некорректные значения – обязательны!** 
-
 ```java
 public class Main {
     public static void main(String[] args) {
@@ -43,33 +42,618 @@ public class Main {
 3. **Реализовать Java-программу в Apache NetBeans IDE, выполняющую вывод в консоль сортированных по имени сущностей типа Person (объекты хранятся в ArrayList). Помимо имени, класс Person должен содержать еще 3 переменных класса. В решении необходимо использовать интерфейс Comparable. Заполнение коллекции выполняется пользователем с клавиатуры во время выполнения программы (минимум 3 элемента коллекции).** 
 
 4. **Реализовать Java-программу в Apache NetBeans IDE, выполняющую вывод в консоль отсортированного по значению ключа HashMap (ключ – типа String). Заполнение HashMap выполняется пользователем с клавиатуры во время выполнения программы (минимум 5 значений). Необходимо предусмотреть проверки на некорректные значения и обработку исключений.**
-   
+   ```java
+   package org.example;  
+  
+import java.util.*;  
+  
+public class Main {  
+    public static void main(String[] args) {  
+        Map<String, String> hashMap = new HashMap<>();  
+        Scanner scanner = new Scanner(System.in);  
+  
+        System.out.println("Input HashMap quantity: ");  
+        int quantity = 0;  
+        boolean valueIsInt = false;  
+        while (!valueIsInt){  
+            try{  
+                quantity = Integer.parseInt(scanner.nextLine());  
+                valueIsInt = true;  
+            }catch (NumberFormatException e){  
+                System.out.println("Try again: ");  
+                quantity = 3;  
+            }  
+        }  
+  
+  
+        System.out.print("Введите ключ - значение через пробел:\n");  
+        for (int i = 0; i < quantity; i++) {  
+            System.out.print(i+1 + "key-value: ");  
+            String input = scanner.nextLine();  
+            String[] keyValues = input.split(" ");  
+            if (keyValues.length<2){  
+                boolean inputCorrected = false;  
+                while (!inputCorrected){  
+                    System.out.println("Try again: ");  
+                    input = scanner.nextLine();  
+                    keyValues = input.split(" ");  
+                    if (keyValues.length>=2){  
+                        inputCorrected = true;  
+                    }  
+                }  
+            }  
+            String key = keyValues[0];  
+            String value = keyValues[1];  
+            hashMap.put(key, value);  
+        }  
+  
+        Map<String, String> sortedMap = new TreeMap<>(hashMap);  
+  
+        System.out.println("Отсортированный по ключу HashMap:");  
+        for (Map.Entry<String, String> entry : sortedMap.entrySet()) {  
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());  
+        }  
+  
+        scanner.close();  
+    }  
+}
+```
+
 5. **Реализовать Java-программу в Apache NetBeans IDE, которая загружает содержимое текстового файла, удаляет все гласные буквы и выводит полученное значение в консоль. Путь к файлу вводит пользователь с клавиатуры. Проверки на некорректные значения – обязательны!** 
    
 6. **Реализовать Java-программу в Apache NetBeans IDE, которая сериализует в файл экземпляр класса сущности Message (класс должен содержать минимум 3 переменных). Путь к файлу вводит пользователь с клавиатуры.** 
-   
+   Main.java
+   ```java
+   package org.example;  
+  
+import java.io.FileOutputStream;  
+import java.io.IOException;  
+import java.io.ObjectOutputStream;  
+import java.util.*;  
+  
+public class Main {  
+    public static void main(String[] args) {  
+  
+        Scanner scanner = new Scanner(System.in);  
+  
+        System.out.print("Введите путь к файлу для сохранения объекта: ");  
+        String filePath = scanner.nextLine();  
+  
+        Message message = new Message("Alice", "Bob", "Hello, how are you?");  
+  
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filePath))) {  
+            outputStream.writeObject(message);  
+            System.out.println("Сообщение успешно сериализовано в файл: " + filePath);  
+        } catch (IOException e) {  
+            System.out.println("Ошибка при записи файла: " + e.getMessage());  
+        }  
+  
+        scanner.close();  
+    }  
+}
+```
+Message.java
+```java
+package org.example;  
+  
+import java.io.Serializable;  
+  
+public class Message implements Serializable {  
+    private final String sender;  
+    private final String receiver;  
+    private final String content;  
+  
+    public Message(String sender, String receiver, String content) {  
+        this.sender = sender;  
+        this.receiver = receiver;  
+        this.content = content;  
+    }  
+  
+    @Override  
+    public String toString() {  
+        return "Message{" +  
+                "sender='" + sender + '\'' +  
+                ", receiver='" + receiver + '\'' +  
+                ", content='" + content + '\'' +  
+                '}';  
+    }  
+}
+```
 7. **Реализовать Java-программу в Apache NetBeans IDE, которая вычисляет площадь прямоугольника в отдельном потоке и выводит результат в консоль. Создание потока должно быть реализовано с использованием интерфейса Runnable. Значения сторон вводит пользователь с клавиатуры. Проверки на некорректные значения – обязательны!** 
    
 8. **Реализовать Java-программу в Apache NetBeans IDE, которая вычисляет в отдельном потоке факториал введенного пользователем числа с клавиатуры и выводит полученное значение в консоль. Необходимо использовать цикл while. Создание потока должно быть реализовано с использованием наследника класса Thread. Проверки на некорректные значения – обязательны!**
-   
+   ```java
+   package org.example;  
+  
+import java.math.BigInteger;  
+import java.util.*;  
+  
+public class Main extends Thread {  
+    private final int number;  
+    private BigInteger factorial = BigInteger.valueOf(1);  
+  
+  
+    public Main(int number) {  
+        this.number = number;  
+    }  
+  
+    public void run() {  
+        if (number < 0) {  
+            System.out.println("Факториал отрицательного числа не определен");  
+            return;  
+        }  
+  
+        int i = 1;  
+        while (i <= number) {  
+            factorial = factorial.multiply(BigInteger.valueOf(i));  
+            i++;  
+        }  
+  
+        System.out.println("Факториал числа " + number + " равен: " + factorial);  
+    }  
+  
+    public static void main(String[] args) {  
+  
+        Scanner scanner = new Scanner(System.in);  
+  
+        System.out.print("Введите число для вычисления факториала: ");  
+        int inputNumber = scanner.nextInt();  
+  
+        Main factorialThread = new Main(inputNumber);  
+        factorialThread.start();  
+    }  
+}
+```
 9. **Дан исходный код Java-программы. При запуске программы (а также в ходе работы), возникают ошибки. Провести отладку программы (debugging), выявить в каких участках программы возникают ошибки, исправить их, запустить рабочий вариант. В данном задании проверяются знания темы обработки исключений, а также умение работы с отладчиком Apache NetBeans IDE. Загрузите программу по адресу: https://goo.su/MAN2U Программа считывает число с клавиатуры, проводит математические операции и отправляет некоторое значение на сервер. Сервер возвращает измененное число. Приложение содержит ошибки компиляции, также в приложении могут возникнуть ошибки при неправильной эксплуатации. Задача исправить ошибки и предусмотреть обработку ошибок в «уязвимых» участках кода.** 
    
 10. **Реализовать Java-программу в Apache NetBeans IDE, которая сохраняет в файл содержимое веб-страницы, адрес которой вводит пользователь с клавиатуры. Использование многопоточности – обязательно.** 
-    
+    ```java
+    package org.example;  
+  
+import java.io.*;  
+import java.net.MalformedURLException;  
+import java.net.URL;  
+import java.util.*;  
+import java.util.concurrent.ExecutorService;  
+import java.util.concurrent.Executors;  
+  
+public class Main  {  
+  
+  
+    public static void main(String[] args) {  
+        ExecutorService executor = Executors.newFixedThreadPool(5);  
+  
+        Scanner scanner = new Scanner(System.in);  
+        System.out.print("Введите URL веб-страницы для загрузки информации: ");  
+        String url = scanner.nextLine();  
+  
+        executor.submit(() -> {  
+            downloadWebPage(url);  
+        });  
+  
+        executor.shutdown();  
+    }  
+  
+    private static void downloadWebPage(String url) {  
+        try {  
+  
+            URL webpageURL = new URL(url);  
+            BufferedReader reader = new BufferedReader(new InputStreamReader(webpageURL.openStream()));  
+  
+            StringBuilder content = new StringBuilder();  
+            String line;  
+            while ((line = reader.readLine()) != null) {  
+                content.append(line);  
+            }  
+            reader.close();  
+  
+            File file = new File("downloadedPage.html");  
+            FileWriter writer = new FileWriter(file);  
+            writer.write(content.toString());  
+            writer.close();  
+  
+            System.out.println("Содержимое веб-страницы успешно сохранено в файл downloadedPage.html");  
+  
+        } catch (MalformedURLException e) {  
+            System.out.println("Неверный URL адрес веб-страницы: " + e.getMessage());  
+        } catch (IOException e) {  
+            System.out.println("Ошибка при загрузке веб-страницы: " + e.getMessage());  
+        }  
+    }  
+}
+```
 11. **Реализовать мобильное приложение в Android Studio, которое складывает два целых числа, введенных пользователем в поля ввода (EditText). Результат вычисления необходимо отобразить в виджете TextView после нажатия на кнопку (Button) и отобразить в лог. В макете activity разрешено использовать контейнеры только одного типа: LinearLayout. В приложении необходимо использовать Library Data Binding для привязки виджетов. Проверки на некорректные значения – обязательны!** 
     
 12. **Реализовать мобильное приложение в Android Studio, состоящее из двух activity, таким образом, чтобы в первую activity вернулся результат математической операции из второй activity. Подробнее: Вторая activity запускается по нажатию на кнопку (Button) в первой activity. Во второй activity пользователь вводит числовое значение в EditText. Далее это значение возводится в степень 2. Пользователь нажимает на кнопку (Button) и приложение возвращается в первую activity и отображает в поле TextView вычисленное значение. Проверки на некорректные значения – обязательны!** 
-    
+    MainActivity.java
+    ```java
+    package com.mirea.kt.ribo.test;  
+  
+import android.content.Intent;  
+import android.os.Bundle;  
+import android.view.View;  
+import android.widget.Button;  
+import android.widget.TextView;  
+  
+import androidx.annotation.Nullable;  
+import androidx.appcompat.app.AppCompatActivity;  
+  
+public class MainActivity extends AppCompatActivity {  
+    @Override  
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {  
+        super.onActivityResult(requestCode, resultCode, data);  
+        if (data == null) {  
+            return;  
+        }  
+        int value = data.getIntExtra("VALUE", 0);  
+        TextView textView = findViewById(R.id.text);  
+        textView.setText(String.valueOf(value));  
+    }  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+        Button button = findViewById(R.id.button);  
+        button.setOnClickListener(new View.OnClickListener() {  
+            @Override  
+            public void onClick(View v) {  
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);  
+                startActivityForResult(intent, 1);  
+            }  
+        });  
+    }  
+}
+```
+SecondActivity.java
+```java
+package com.mirea.kt.ribo.test;  
+  
+import android.content.Intent;  
+import android.os.Bundle;  
+import android.widget.Button;  
+import android.widget.EditText;  
+  
+import androidx.appcompat.app.AppCompatActivity;  
+  
+public class SecondActivity extends AppCompatActivity {  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_second);  
+  
+        EditText editText = findViewById(R.id.editText);  
+        Button calcButton = findViewById(R.id.button);  
+  
+        calcButton.setOnClickListener(v -> {  
+            if (editText.getText().length() > 0){  
+                int value = Integer.parseInt(editText.getText().toString());  
+                Intent intent = new Intent(SecondActivity.this, MainActivity.class);  
+                intent.putExtra("VALUE", value*value);  
+                setResult(RESULT_OK, intent);  
+                finish();  
+            }  
+        });  
+    }  
+}
+```
 13. **Реализовать мобильное приложение в Android Studio, с помощью которого по нажатию на картинку (ImageView) можно поделиться текстом из виджета EditText через другое приложение (мессенджеры, смс и т.п.). В приложении необходимо использовать Library Data Binding для привязки виджетов. Картинка для imageView: https://goo.su/TpgLD9l.** 
     
 14. **Реализовать мобильное приложение в Android Studio, в котором по нажатию на кнопку (Button) будет заменяться содержимое экрана, расположенного ниже кнопки. При выполнении задания обязательно использовать фрагменты (динамическая регистрация). Содержимое экранов может быть любое.** 
+    MainActivity.java
+    ```java
+    package com.mirea.kt.ribo.task14;  
+  
+import android.os.Bundle;  
+import android.view.View;  
+  
+  
+import androidx.appcompat.app.AppCompatActivity;  
+import androidx.fragment.app.Fragment;  
+import androidx.fragment.app.FragmentManager;  
+import androidx.fragment.app.FragmentTransaction;  
+  
+public class MainActivity extends AppCompatActivity {  
+  
+  
+    private Fragment firstFragment;  
+    private Fragment secondFragment;  
+  
+    private boolean isFragment1Displayed = true;  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+  
+  
+        FragmentManager fragmentManager = getSupportFragmentManager();  
+        firstFragment = new FirstFragment();  
+        secondFragment = new SecondFragment();  
+        fragmentManager.beginTransaction()  
+                .replace(R.id.fragment_container_view, firstFragment, null)  
+                .commit();  
+    }  
+  
+    public void changeContent(View view) {  
+        FragmentManager fragmentManager = getSupportFragmentManager();  
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();  
+  
+        if (isFragment1Displayed) {  
+            fragmentTransaction.replace(R.id.fragment_container_view, firstFragment);  
+            isFragment1Displayed = false;  
+        } else {  
+            fragmentTransaction.replace(R.id.fragment_container_view, secondFragment);  
+            isFragment1Displayed = true;  
+        }  
+        fragmentTransaction.commit();  
+    }  
+  
+}
+```
+activity_main.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>  
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:app="http://schemas.android.com/apk/res-auto"  
+    xmlns:tools="http://schemas.android.com/tools"  
+    android:id="@+id/main"  
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    tools:context=".MainActivity">  
+  
+    <TextView        android:id="@+id/textView"  
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"  
+        android:text="Hello World!"  
+        app:layout_constraintBottom_toBottomOf="parent"  
+        app:layout_constraintEnd_toEndOf="parent"  
+        app:layout_constraintStart_toStartOf="parent"  
+        app:layout_constraintTop_toTopOf="parent" />  
+  
+    <FrameLayout        android:id="@+id/fragment_container_view"  
+        android:layout_width="match_parent"  
+        android:layout_height="0dp"  
+        app:layout_constraintBottom_toBottomOf="parent"  
+        app:layout_constraintEnd_toEndOf="parent"  
+        app:layout_constraintStart_toStartOf="parent"  
+        app:layout_constraintTop_toBottomOf="@+id/textView" />  
+  
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+fragment_first.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>  
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:tools="http://schemas.android.com/tools"  
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    tools:context=".FirstFragment">  
+<Button  
+    android:layout_width="wrap_content"  
+    android:layout_height="wrap_content"  
+    android:text="FIRST FRAGMENT"  
+    android:onClick="changeContent"/>  
+  
+</FrameLayout>
+```
+first_fragment.java
+```java
+package com.mirea.kt.ribo.task14;  
+  
+import android.os.Bundle;  
+  
+import androidx.fragment.app.Fragment;  
+  
+import android.view.LayoutInflater;  
+import android.view.View;  
+import android.view.ViewGroup;  
+  
+  
+public class FirstFragment extends Fragment {  
+  
+    public FirstFragment() {  
+        // Required empty public constructor  
+    }  
+  
+    @Override  
+    public void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+    }  
+  
+    @Override  
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,  
+                             Bundle savedInstanceState) {  
+        return inflater.inflate(R.layout.fragment_first, container, false);  
+    }  
+}
+```
 15. **Реализовать мобильное приложение в Android Studio, в котором при нажатии на кнопку (Button) создается база данных SQLite с таблицей для хранения списка сообщений (Message). Таблица должна содержать минимум 4 столбца: идентификатор сообщения (число), тело сообщения (строка), дата и время отправки сообщения (строка), флаг является ли сообщение прочитанным или нет.** 
 16. **Реализовать мобильное приложение в Android Studio, в котором значение (тип String), записанное в поле виджета EditText, сохраняется в хранилище SharedPreferces при нажатии на кнопку (Button). При нажатии на вторую кнопку, значение загружается из SharedPreferences и отображается в TextView и в лог.** 
+    ```java 
+package com.example.settingsapp;
+ 
+import androidx.appcompat.app.AppCompatActivity;
+ 
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+ 
+public class MainActivity extends AppCompatActivity {
+ 
+    private static final String PREFS_FILE = "Account";
+    private static final String PREF_NAME = "Name";
+    SharedPreferences settings;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        settings = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
+    }
+ 
+    public void saveName(View view) {
+        // получаем введенное имя
+        EditText nameBox = findViewById(R.id.nameBox);
+        String name = nameBox.getText().toString();
+        // сохраняем его в настройках
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putString(PREF_NAME, name);
+        prefEditor.apply();
+    }
+ 
+    public void getName(View view) {
+        // получаем сохраненное имя
+        TextView nameView = findViewById(R.id.nameView);
+        String name = settings.getString(PREF_NAME,"не определено");
+        nameView.setText(name);
+    }
+}
+```
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+ 
+    <EditText
+        android:id="@+id/nameBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Введите имя"
+        app:layout_constraintBottom_toTopOf="@id/saveButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+ 
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сохранить"
+        android:onClick="saveName"
+        app:layout_constraintBottom_toTopOf="@id/nameView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameBox"/>
+ 
+    <TextView
+        android:id="@+id/nameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/getButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/saveButton"/>
+    <Button
+        android:id="@+id/getButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Получить имя"
+        android:onClick="getName"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameView"/>
+ 
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
 17. **Реализовать мобильное приложение в Android Studio, в котором значение, записанное в поле виджета EditText, сохраняется в текстовый файл во внутренней памяти устройства при нажатии на кнопку (Button). Имя файла задает пользователь (вводит во второй EditText). При сохранении файла необходимо использовать многопоточность (отдельный поток).** 
 18. **Реализовать мобильное приложение в Android Studio, в котором по нажатию на кнопку (Button) «Старт» будет запускаться фоновый сервис. В сервисе должен запускаться новый поток через WorkManager (код в отдельном потоке может быть любым). По нажатию на кнопку «Стоп» сервис должен быть остановлен, а задача WorkManager – отменена.** 
+    `implementation` `"android.arch.work:work-runtime:1.0.0-alpha02"`
+    Создаем класс worker
+    ```java
+    public class MyWorker extends Worker {
+ 
+    static final String TAG = "workmng";
+ 
+    @NonNull
+    @Override
+    public WorkerResult doWork() {
+        Log.d(TAG, "doWork: start");
+ 
+        try {
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+ 
+        Log.d(TAG, "doWork: end");
+ 
+        return WorkerResult.SUCCESS;
+    }
+}
+```
+
+
+```java
+Запуск
+WorkManager.getInstance().enqueue(myWorkRequest);
+Отмена 
+WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
+```
 19. **Реализовать мобильное приложение в Android Studio, которое загружает содержимое интернет-страницы в лог по нажатию на кнопку (Button). Адрес интернет страницы вводит пользователь в EditText. Допускается использовать любой инструмент для работы с сетью.** 
 20. **Реализовать мобильное приложение в Android Studio, которое загружает на сервер с помощью POST-запроса протокола HTTP текстовое сообщение. Текстовое сообщение вводит пользователь в поле виджета EditText. По нажатию на кнопку (Button) выполняется POST-запрос. Сообщение передается в поле «text» тела запроса. Ответ сервера необходимо отобразить в консоль. Допускается использовать любой инструмент для работы с сетью (адрес сервера и url запроса необходимо получить у преподавателя).**
-
+    Реализация через Retrofit
+    Create file Api
+    ```kotlin
+    package com.mirea.kt.ribo.notes.data  
+  
+import com.mirea.kt.ribo.notes.domain.Task  
+import retrofit2.Call  
+import retrofit2.http.FieldMap  
+import retrofit2.http.FormUrlEncoded  
+import retrofit2.http.POST  
+  
+  
+interface MireaApi {  
+    @FormUrlEncoded  
+    @POST("/coursework/login.php")  
+    fun getTask(@FieldMap params: Map<String, String>): Call<Task>  
+  
+}
+```
+in activity
+```java
+private val retrofit: Retrofit = Retrofit.Builder()  
+    .baseUrl("https://android-for-students.ru/")  
+    .addConverterFactory(GsonConverterFactory.create())  
+    .build()  
+  
+private val mireaApi: MireaApi = retrofit.create(MireaApi::class.java)  
+  
+override suspend fun getTask(login: String, password: String, studentGroup: String): Task {  
+  
+    val params: MutableMap<String, String> = HashMap()  
+    params["lgn"] = login  
+    params["pwd"] = password  
+    params["g"] = studentGroup  
+  
+    val call: Call<Task> = mireaApi.getTask(params)  
+    val task = Task(emptyList(), -1, "", "", -1)  
+  
+    return suspendCoroutine {  
+        call.enqueue(object : Callback<Task> {  
+            override fun onResponse(call: Call<Task>, response: Response<Task>) {  
+                if (response.isSuccessful) {  
+                    Log.d("DEBUG_REQUEST", "SUCCESSFUL ${response.body()}")  
+                    it.resume(response.body()!!)  
+                } else {  
+                    Log.d("DEBUG_REQUEST", "ERROR ${response.body()}")  
+                    it.resume(task)  
+                }  
+            }  
+  
+            override fun onFailure(call: Call<Task>, t: Throwable) {
+                Log.e("DEBUG_REQUEST", "Error sending after sending this data: $login $password")
+                it.resume(task)
+            }
+        })
+    }
+}
+```
 
 
 **1. Реализовать** **Java-программу в** **Apache** **NetBeans** **IDE демонстрирующую**

@@ -341,8 +341,225 @@ public class SecondActivity extends AppCompatActivity {
 13. **Реализовать мобильное приложение в Android Studio, с помощью которого по нажатию на картинку (ImageView) можно поделиться текстом из виджета EditText через другое приложение (мессенджеры, смс и т.п.). В приложении необходимо использовать Library Data Binding для привязки виджетов. Картинка для imageView: https://goo.su/TpgLD9l.** 
     
 14. **Реализовать мобильное приложение в Android Studio, в котором по нажатию на кнопку (Button) будет заменяться содержимое экрана, расположенного ниже кнопки. При выполнении задания обязательно использовать фрагменты (динамическая регистрация). Содержимое экранов может быть любое.** 
+    MainActivity.java
+    ```java
+    package com.mirea.kt.ribo.task14;  
+  
+import android.os.Bundle;  
+import android.view.View;  
+  
+  
+import androidx.appcompat.app.AppCompatActivity;  
+import androidx.fragment.app.Fragment;  
+import androidx.fragment.app.FragmentManager;  
+import androidx.fragment.app.FragmentTransaction;  
+  
+public class MainActivity extends AppCompatActivity {  
+  
+  
+    private Fragment firstFragment;  
+    private Fragment secondFragment;  
+  
+    private boolean isFragment1Displayed = true;  
+  
+    @Override  
+    protected void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+        setContentView(R.layout.activity_main);  
+  
+  
+        FragmentManager fragmentManager = getSupportFragmentManager();  
+        firstFragment = new FirstFragment();  
+        secondFragment = new SecondFragment();  
+        fragmentManager.beginTransaction()  
+                .replace(R.id.fragment_container_view, firstFragment, null)  
+                .commit();  
+    }  
+  
+    public void changeContent(View view) {  
+        FragmentManager fragmentManager = getSupportFragmentManager();  
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();  
+  
+        if (isFragment1Displayed) {  
+            fragmentTransaction.replace(R.id.fragment_container_view, firstFragment);  
+            isFragment1Displayed = false;  
+        } else {  
+            fragmentTransaction.replace(R.id.fragment_container_view, secondFragment);  
+            isFragment1Displayed = true;  
+        }  
+        fragmentTransaction.commit();  
+    }  
+  
+}
+```
+activity_main.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>  
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:app="http://schemas.android.com/apk/res-auto"  
+    xmlns:tools="http://schemas.android.com/tools"  
+    android:id="@+id/main"  
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    tools:context=".MainActivity">  
+  
+    <TextView        android:id="@+id/textView"  
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"  
+        android:text="Hello World!"  
+        app:layout_constraintBottom_toBottomOf="parent"  
+        app:layout_constraintEnd_toEndOf="parent"  
+        app:layout_constraintStart_toStartOf="parent"  
+        app:layout_constraintTop_toTopOf="parent" />  
+  
+    <FrameLayout        android:id="@+id/fragment_container_view"  
+        android:layout_width="match_parent"  
+        android:layout_height="0dp"  
+        app:layout_constraintBottom_toBottomOf="parent"  
+        app:layout_constraintEnd_toEndOf="parent"  
+        app:layout_constraintStart_toStartOf="parent"  
+        app:layout_constraintTop_toBottomOf="@+id/textView" />  
+  
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
+fragment_first.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>  
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"  
+    xmlns:tools="http://schemas.android.com/tools"  
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    tools:context=".FirstFragment">  
+<Button  
+    android:layout_width="wrap_content"  
+    android:layout_height="wrap_content"  
+    android:text="FIRST FRAGMENT"  
+    android:onClick="changeContent"/>  
+  
+</FrameLayout>
+```
+first_fragment.java
+```java
+package com.mirea.kt.ribo.task14;  
+  
+import android.os.Bundle;  
+  
+import androidx.fragment.app.Fragment;  
+  
+import android.view.LayoutInflater;  
+import android.view.View;  
+import android.view.ViewGroup;  
+  
+  
+public class FirstFragment extends Fragment {  
+  
+    public FirstFragment() {  
+        // Required empty public constructor  
+    }  
+  
+    @Override  
+    public void onCreate(Bundle savedInstanceState) {  
+        super.onCreate(savedInstanceState);  
+    }  
+  
+    @Override  
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,  
+                             Bundle savedInstanceState) {  
+        return inflater.inflate(R.layout.fragment_first, container, false);  
+    }  
+}
+```
 15. **Реализовать мобильное приложение в Android Studio, в котором при нажатии на кнопку (Button) создается база данных SQLite с таблицей для хранения списка сообщений (Message). Таблица должна содержать минимум 4 столбца: идентификатор сообщения (число), тело сообщения (строка), дата и время отправки сообщения (строка), флаг является ли сообщение прочитанным или нет.** 
 16. **Реализовать мобильное приложение в Android Studio, в котором значение (тип String), записанное в поле виджета EditText, сохраняется в хранилище SharedPreferces при нажатии на кнопку (Button). При нажатии на вторую кнопку, значение загружается из SharedPreferences и отображается в TextView и в лог.** 
+    ```java 
+package com.example.settingsapp;
+ 
+import androidx.appcompat.app.AppCompatActivity;
+ 
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+ 
+public class MainActivity extends AppCompatActivity {
+ 
+    private static final String PREFS_FILE = "Account";
+    private static final String PREF_NAME = "Name";
+    SharedPreferences settings;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        settings = getSharedPreferences(PREFS_FILE, MODE_PRIVATE);
+    }
+ 
+    public void saveName(View view) {
+        // получаем введенное имя
+        EditText nameBox = findViewById(R.id.nameBox);
+        String name = nameBox.getText().toString();
+        // сохраняем его в настройках
+        SharedPreferences.Editor prefEditor = settings.edit();
+        prefEditor.putString(PREF_NAME, name);
+        prefEditor.apply();
+    }
+ 
+    public void getName(View view) {
+        // получаем сохраненное имя
+        TextView nameView = findViewById(R.id.nameView);
+        String name = settings.getString(PREF_NAME,"не определено");
+        nameView.setText(name);
+    }
+}
+```
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+ 
+    <EditText
+        android:id="@+id/nameBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Введите имя"
+        app:layout_constraintBottom_toTopOf="@id/saveButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+ 
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сохранить"
+        android:onClick="saveName"
+        app:layout_constraintBottom_toTopOf="@id/nameView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameBox"/>
+ 
+    <TextView
+        android:id="@+id/nameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/getButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/saveButton"/>
+    <Button
+        android:id="@+id/getButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Получить имя"
+        android:onClick="getName"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/nameView"/>
+ 
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
 17. **Реализовать мобильное приложение в Android Studio, в котором значение, записанное в поле виджета EditText, сохраняется в текстовый файл во внутренней памяти устройства при нажатии на кнопку (Button). Имя файла задает пользователь (вводит во второй EditText). При сохранении файла необходимо использовать многопоточность (отдельный поток).** 
 18. **Реализовать мобильное приложение в Android Studio, в котором по нажатию на кнопку (Button) «Старт» будет запускаться фоновый сервис. В сервисе должен запускаться новый поток через WorkManager (код в отдельном потоке может быть любым). По нажатию на кнопку «Стоп» сервис должен быть остановлен, а задача WorkManager – отменена.** 
 19. **Реализовать мобильное приложение в Android Studio, которое загружает содержимое интернет-страницы в лог по нажатию на кнопку (Button). Адрес интернет страницы вводит пользователь в EditText. Допускается использовать любой инструмент для работы с сетью.** 

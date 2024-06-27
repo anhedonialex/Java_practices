@@ -562,9 +562,98 @@ public class MainActivity extends AppCompatActivity {
 ```
 17. **Реализовать мобильное приложение в Android Studio, в котором значение, записанное в поле виджета EditText, сохраняется в текстовый файл во внутренней памяти устройства при нажатии на кнопку (Button). Имя файла задает пользователь (вводит во второй EditText). При сохранении файла необходимо использовать многопоточность (отдельный поток).** 
 18. **Реализовать мобильное приложение в Android Studio, в котором по нажатию на кнопку (Button) «Старт» будет запускаться фоновый сервис. В сервисе должен запускаться новый поток через WorkManager (код в отдельном потоке может быть любым). По нажатию на кнопку «Стоп» сервис должен быть остановлен, а задача WorkManager – отменена.** 
+    `implementation` `"android.arch.work:work-runtime:1.0.0-alpha02"`
+    Создаем класс worker
+    ```java
+    public class MyWorker extends Worker {
+ 
+    static final String TAG = "workmng";
+ 
+    @NonNull
+    @Override
+    public WorkerResult doWork() {
+        Log.d(TAG, "doWork: start");
+ 
+        try {
+            TimeUnit.SECONDS.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+ 
+        Log.d(TAG, "doWork: end");
+ 
+        return WorkerResult.SUCCESS;
+    }
+}
+```
+
+
+```java
+Запуск
+WorkManager.getInstance().enqueue(myWorkRequest);
+Отмена 
+WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
+```
 19. **Реализовать мобильное приложение в Android Studio, которое загружает содержимое интернет-страницы в лог по нажатию на кнопку (Button). Адрес интернет страницы вводит пользователь в EditText. Допускается использовать любой инструмент для работы с сетью.** 
 20. **Реализовать мобильное приложение в Android Studio, которое загружает на сервер с помощью POST-запроса протокола HTTP текстовое сообщение. Текстовое сообщение вводит пользователь в поле виджета EditText. По нажатию на кнопку (Button) выполняется POST-запрос. Сообщение передается в поле «text» тела запроса. Ответ сервера необходимо отобразить в консоль. Допускается использовать любой инструмент для работы с сетью (адрес сервера и url запроса необходимо получить у преподавателя).**
-
+    Реализация через Retrofit
+    Create file Api
+    ```kotlin
+    package com.mirea.kt.ribo.notes.data  
+  
+import com.mirea.kt.ribo.notes.domain.Task  
+import retrofit2.Call  
+import retrofit2.http.FieldMap  
+import retrofit2.http.FormUrlEncoded  
+import retrofit2.http.POST  
+  
+  
+interface MireaApi {  
+    @FormUrlEncoded  
+    @POST("/coursework/login.php")  
+    fun getTask(@FieldMap params: Map<String, String>): Call<Task>  
+  
+}
+```
+in activity
+```java
+private val retrofit: Retrofit = Retrofit.Builder()  
+    .baseUrl("https://android-for-students.ru/")  
+    .addConverterFactory(GsonConverterFactory.create())  
+    .build()  
+  
+private val mireaApi: MireaApi = retrofit.create(MireaApi::class.java)  
+  
+override suspend fun getTask(login: String, password: String, studentGroup: String): Task {  
+  
+    val params: MutableMap<String, String> = HashMap()  
+    params["lgn"] = login  
+    params["pwd"] = password  
+    params["g"] = studentGroup  
+  
+    val call: Call<Task> = mireaApi.getTask(params)  
+    val task = Task(emptyList(), -1, "", "", -1)  
+  
+    return suspendCoroutine {  
+        call.enqueue(object : Callback<Task> {  
+            override fun onResponse(call: Call<Task>, response: Response<Task>) {  
+                if (response.isSuccessful) {  
+                    Log.d("DEBUG_REQUEST", "SUCCESSFUL ${response.body()}")  
+                    it.resume(response.body()!!)  
+                } else {  
+                    Log.d("DEBUG_REQUEST", "ERROR ${response.body()}")  
+                    it.resume(task)  
+                }  
+            }  
+  
+            override fun onFailure(call: Call<Task>, t: Throwable) {
+                Log.e("DEBUG_REQUEST", "Error sending after sending this data: $login $password")
+                it.resume(task)
+            }
+        })
+    }
+}
+```
 
 
 **1. Реализовать** **Java-программу в** **Apache** **NetBeans** **IDE демонстрирующую**

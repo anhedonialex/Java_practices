@@ -15,8 +15,19 @@ public class E9DebugExamTask {
 
     public static void main(String[] args) {
         System.out.println("Введите число больше 5 ");
-        Scanner sc = new Scanner(System.in);
-        int value = sc.nextInt();
+        //Scanner sc = new Scanner(System.in);
+        //int value = sc.nextInt();
+        int value;
+        while (true) {
+            try {
+                Scanner sc = new Scanner(System.in);
+                value = sc.nextInt();
+                break;
+            } catch (Exception e){
+                System.out.println("Введите INTEGER значение!");
+            }
+        }
+
         if(value > 5){
             Integer[] array = new Integer[value];
             // было
@@ -53,7 +64,13 @@ public class E9DebugExamTask {
                             sbResponse.append(currentLine);
                         }
                         String responseBody = sbResponse.toString();
-                        System.out.println("Integer value from server: " + Integer.valueOf(responseBody));
+                        //System.out.println("Integer value from server: " + Integer.valueOf(responseBody));
+                        try {
+                            System.out.println("Integer value from server: " + Integer.valueOf(responseBody));
+                        } catch (Exception e){
+                            System.out.println(e.getLocalizedMessage());
+                        }
+
                     }else{
                         System.out.println("Error! Bad response code!");
                     }

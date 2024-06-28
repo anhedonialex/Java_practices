@@ -1,5 +1,35 @@
 1. **Реализовать Java-программу в Apache NetBeans IDE, которая преобразовывает введенную пользователем с клавиатуры строку:  разворот строки;  удаление первого и последнего символа в строке;  перевод строки в верхний регистр. Три новых преобразованных строки необходимо сохранить в текстовый файл.** 
+```java
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
 
+public class E1StrTransform {
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        FileWriter fout = new FileWriter("E1StrTransform.txt");
+        String temporary;
+        System.out.print("Enter your precious string: ");
+        String my_precious_str = scanner.nextLine();
+        temporary = new StringBuilder(my_precious_str).reverse().toString();
+        System.out.println("Reversed: " + temporary);
+        fout.write("Reversed: " + temporary + "\n");
+        if (my_precious_str.length() > 2) {
+            temporary = my_precious_str.substring(1, my_precious_str.length() - 1);
+            System.out.println("Minus first 'n' last: " + temporary);
+            fout.write("Minus first 'n' last: " + temporary + "\n");
+        }
+        else {
+            System.out.println("Minus first 'n' last: Failed due to length() < 2");
+            fout.write("Minus first 'n' last: Failed due to length() < 2\n");
+        }
+        temporary = my_precious_str.toUpperCase();
+        System.out.println("Upper: " + temporary);
+        fout.write("Upper: " + temporary + "\n");
+        fout.close();
+    }
+}
+```
 2. **Реализовать Java-программу в Apache NetBeans IDE, которая вычисляет максимальное и минимальное число из введенных пользователем с клавиатуры числовых значений через запятую. Результаты отображаются в консоли. В решении необходимо использовать цикл while. Проверки на некорректные значения – обязательны!** 
 ```java
 public class Main {
@@ -40,10 +70,80 @@ public class Main {
 ```
 
 3. **Реализовать Java-программу в Apache NetBeans IDE, выполняющую вывод в консоль сортированных по имени сущностей типа Person (объекты хранятся в ArrayList). Помимо имени, класс Person должен содержать еще 3 переменных класса. В решении необходимо использовать интерфейс Comparable. Заполнение коллекции выполняется пользователем с клавиатуры во время выполнения программы (минимум 3 элемента коллекции).** 
+```java
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+// implements Comparable<Person> подсветится красным, alt+enter, implement methods
+// Геттеры сеттеры генерируем с помощью alt + insert
+class Person implements Comparable<Person>{
+    private String name;
+    private int age;
+    private boolean isStudent = true;
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    public Person(String name, int age, boolean isStudent) {
+        this.age = age;
+        this.name = name;
+        this.isStudent = isStudent;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isStudent() {
+        return isStudent;
+    }
+
+    public void setStudent(boolean student) {
+        isStudent = student;
+    }
+
+    @Override
+    public int compareTo(Person o) {
+        return this.name.compareTo(o.name);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Name: %s, Age: %d, isStudent: %b",this.name, this.age, this.isStudent);
+    }
+}
+public class E3PersonSort {
+    public static void main(String[] args) {
+        List<Person> persons = new ArrayList<>();
+        persons.add(new Person("John", 10));
+        persons.add(new Person("Doe", 99, false));
+        persons.add(new Person("Charlotte", 20));
+        Collections.sort(persons);
+        System.out.println("Сортировка в алфавитном порядке");
+
+        for (Person person : persons){
+            System.out.println(person);
+        }
+    }
+}
+```
 4. **Реализовать Java-программу в Apache NetBeans IDE, выполняющую вывод в консоль отсортированного по значению ключа HashMap (ключ – типа String). Заполнение HashMap выполняется пользователем с клавиатуры во время выполнения программы (минимум 5 значений). Необходимо предусмотреть проверки на некорректные значения и обработку исключений.**
-   ```java
-   package org.example;  
+```java
+package org.example;  
   
 import java.util.*;  
   
@@ -100,11 +200,46 @@ public class Main {
 ```
 
 5. **Реализовать Java-программу в Apache NetBeans IDE, которая загружает содержимое текстового файла, удаляет все гласные буквы и выводит полученное значение в консоль. Путь к файлу вводит пользователь с клавиатуры. Проверки на некорректные значения – обязательны!** 
-   
+```java
+package org.example;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class E5VowelRemove {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Введите путь к файлу:");
+        String filePath = scanner.nextLine();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(removeVowels(line));
+            }
+            System.out.println("Содержимое файла без гласных:");
+            System.out.println(result.toString());
+        } catch (IOException e) {
+            System.out.println("Ошибка при чтении файла: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Произошла ошибка: " + e.getMessage());
+        }
+    }
+
+    private static String removeVowels(String input) {
+        // тут используются регулярные выряжения (regex)
+        // если наблюдаются проблемы с кодировкой русского, можно его убрать
+        return input.replaceAll("[AEIOUaeiouАЕЁИОУЫЭЮЯаеёиоуыэюя]", "");
+    }
+}
+```
 6. **Реализовать Java-программу в Apache NetBeans IDE, которая сериализует в файл экземпляр класса сущности Message (класс должен содержать минимум 3 переменных). Путь к файлу вводит пользователь с клавиатуры.** 
    Main.java
-   ```java
-   package org.example;  
+```java
+package org.example;  
   
 import java.io.FileOutputStream;  
 import java.io.IOException;  
@@ -160,10 +295,63 @@ public class Message implements Serializable {
 }
 ```
 7. **Реализовать Java-программу в Apache NetBeans IDE, которая вычисляет площадь прямоугольника в отдельном потоке и выводит результат в консоль. Создание потока должно быть реализовано с использованием интерфейса Runnable. Значения сторон вводит пользователь с клавиатуры. Проверки на некорректные значения – обязательны!** 
-   
+```java
+package org.example;
+
+import java.util.Scanner;
+
+public class E7RectangleAreaCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Введите длину прямоугольника:");
+        double length = getPositiveDouble(scanner);
+
+        System.out.println("Введите ширину прямоугольника:");
+        double width = getPositiveDouble(scanner);
+
+        Runnable task = new AreaCalculatorTask(length, width);
+        Thread thread = new Thread(task);
+        thread.start();
+    }
+
+    private static double getPositiveDouble(Scanner scanner) {
+        double value;
+        while (true) {
+            try {
+                value = Double.parseDouble(scanner.nextLine());
+                if (value <= 0) {
+                    throw new NumberFormatException("Значение должно быть положительным.");
+                }
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Некорректное значение. Пожалуйста, введите положительное число:");
+            }
+        }
+        return value;
+    }
+}
+
+class AreaCalculatorTask implements Runnable {
+    private final double length;
+    private final double width;
+
+    public AreaCalculatorTask(double length, double width) {
+        this.length = length;
+        this.width = width;
+    }
+
+    @Override
+    public void run() {
+        double area = length * width;
+        System.out.println("Площадь прямоугольника: " + area);
+    }
+}
+
+```
 8. **Реализовать Java-программу в Apache NetBeans IDE, которая вычисляет в отдельном потоке факториал введенного пользователем числа с клавиатуры и выводит полученное значение в консоль. Необходимо использовать цикл while. Создание потока должно быть реализовано с использованием наследника класса Thread. Проверки на некорректные значения – обязательны!**
-   ```java
-   package org.example;  
+```java
+package org.example;  
   
 import java.math.BigInteger;  
 import java.util.*;  
@@ -205,11 +393,106 @@ public class Main extends Thread {
 }
 ```
 9. **Дан исходный код Java-программы. При запуске программы (а также в ходе работы), возникают ошибки. Провести отладку программы (debugging), выявить в каких участках программы возникают ошибки, исправить их, запустить рабочий вариант. В данном задании проверяются знания темы обработки исключений, а также умение работы с отладчиком Apache NetBeans IDE. Загрузите программу по адресу: https://goo.su/MAN2U Программа считывает число с клавиатуры, проводит математические операции и отправляет некоторое значение на сервер. Сервер возвращает измененное число. Приложение содержит ошибки компиляции, также в приложении могут возникнуть ошибки при неправильной эксплуатации. Задача исправить ошибки и предусмотреть обработку ошибок в «уязвимых» участках кода.** 
-   
+```java
+package org.example;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class E9DebugExamTask {
+
+    public static void main(String[] args) {
+        System.out.println("Введите число больше 5 ");
+        //Scanner sc = new Scanner(System.in);
+        //int value = sc.nextInt();
+        int value;
+        while (true) {
+            try {
+                Scanner sc = new Scanner(System.in);
+                value = sc.nextInt();
+                break;
+            } catch (Exception e){
+                System.out.println("Введите INTEGER значение!");
+            }
+        }
+
+        if(value > 5){
+            Integer[] array = new Integer[value];
+            // было
+            //for(int i = 0;i <= value;i++){
+            for(int i = 0;i < value; i++){
+                array[i] = (i + 1) * 2;
+            }          
+            int data = Arrays.stream(array).max((Integer o1, Integer o2) -> o1.compareTo(o2)).get();
+            Thread t = new Thread(() -> {
+                try {
+                    URL url = new URL("https://android-for-students.ru/exam/calc.php");
+                    URLConnection connection = url.openConnection();
+                    // было
+                    // HttpURLConnection httpConnecton = connection;
+                    HttpURLConnection httpConnecton = (HttpURLConnection) connection;
+                    httpConnecton.setRequestMethod("POST");
+                    // было
+                    // httpConnecton.setDoOutput();
+                    // true для POST и PUT
+                    // false для GET
+                    //Метод setDoOutput(true) в классе HttpURLConnection устанавливает флаг, который указывает, что соединение будет использоваться для отправки данных на сервер, а не только для получения данных.
+                    httpConnecton.setDoOutput(true);
+                    OutputStreamWriter osw = new OutputStreamWriter(httpConnecton.getOutputStream());
+                    osw.write("value=" + data);
+                    osw.flush();
+                    int responseCode = httpConnecton.getResponseCode();
+                    System.out.println("Response Code : " + responseCode);
+                    if(responseCode == 200){
+                        InputStreamReader isr = new InputStreamReader(httpConnecton.getInputStream());
+                        BufferedReader br = new BufferedReader(isr);
+                        String currentLine;
+                        StringBuilder sbResponse = new StringBuilder();
+                        while((currentLine = br.readLine()) != null){
+                            sbResponse.append(currentLine);
+                        }
+                        String responseBody = sbResponse.toString();
+                        //System.out.println("Integer value from server: " + Integer.valueOf(responseBody));
+                        try {
+                            System.out.println("Integer value from server: " + Integer.valueOf(responseBody));
+                        } catch (Exception e){
+                            System.out.println(e.getLocalizedMessage());
+                        }
+
+                    }else{
+                        System.out.println("Error! Bad response code!");
+                    }
+                } catch (MalformedURLException ex) {
+                    System.out.println("URL error" + ex.getLocalizedMessage());
+                } catch (IOException ex) {
+                    System.out.println(ex.getLocalizedMessage());                
+                }
+            });
+            t.start();       
+            try {
+                t.join();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+        else {
+            System.out.println("Сказано же, больше 5 надо");
+        }
+    }
+}
+
+```
 10. **Реализовать Java-программу в Apache NetBeans IDE, которая сохраняет в файл содержимое веб-страницы, адрес которой вводит пользователь с клавиатуры. Использование многопоточности – обязательно.** 
-    ```java
-    package org.example;  
-  
+```java
+package org.example;   
 import java.io.*;  
 import java.net.MalformedURLException;  
 import java.net.URL;  
@@ -263,11 +546,121 @@ public class Main  {
 }
 ```
 11. **Реализовать мобильное приложение в Android Studio, которое складывает два целых числа, введенных пользователем в поля ввода (EditText). Результат вычисления необходимо отобразить в виджете TextView после нажатия на кнопку (Button) и отобразить в лог. В макете activity разрешено использовать контейнеры только одного типа: LinearLayout. В приложении необходимо использовать Library Data Binding для привязки виджетов. Проверки на некорректные значения – обязательны!** 
-    
+
+MainActivity.java
+```java
+package com.example.e11calc;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        EditText e1 = findViewById(R.id.editText1);
+        EditText e2 = findViewById(R.id.editText2);
+        TextView tv = findViewById(R.id.textView);
+        Button sum = findViewById(R.id.button);
+        sum.setOnClickListener(v->{
+            Log.i("Hint", "Кнопка нажата");
+            String e1_val = e1.getText().toString();
+            String e2_val = e2.getText().toString();
+            if (!e1_val.isEmpty() && !e2_val.isEmpty()){
+                int result = Integer.parseInt(e1_val) + Integer.parseInt(e2_val);
+                Log.i("Sum", String.valueOf(result));
+                tv.setText(String.valueOf(result));
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "Вы ввели кринж", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+}
+```
+
+activity_main.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+        <EditText
+            android:id="@+id/editText1"
+            android:ems="10"
+            android:hint="Первое слагаемое"
+            android:inputType="numberSigned"
+            app:layout_constraintBottom_toTopOf="@+id/editText2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+        <EditText
+            android:id="@+id/editText2"
+
+            android:ems="10"
+            android:hint="Второе слагаемое"
+            android:inputType="numberSigned"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/textView"
+            android:layout_weight="1"
+            android:text="TextView"
+
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="364dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_weight="1"
+            android:text="Сослагать" />
+    </LinearLayout>
+</LinearLayout>
+```
 12. **Реализовать мобильное приложение в Android Studio, состоящее из двух activity, таким образом, чтобы в первую activity вернулся результат математической операции из второй activity. Подробнее: Вторая activity запускается по нажатию на кнопку (Button) в первой activity. Во второй activity пользователь вводит числовое значение в EditText. Далее это значение возводится в степень 2. Пользователь нажимает на кнопку (Button) и приложение возвращается в первую activity и отображает в поле TextView вычисленное значение. Проверки на некорректные значения – обязательны!** 
-    MainActivity.java
-    ```java
-    package com.mirea.kt.ribo.test;  
+
+MainActivity.java
+```java
+package com.mirea.kt.ribo.test;  
   
 import android.content.Intent;  
 import android.os.Bundle;  
@@ -338,12 +731,186 @@ public class SecondActivity extends AppCompatActivity {
     }  
 }
 ```
-13. **Реализовать мобильное приложение в Android Studio, с помощью которого по нажатию на картинку (ImageView) можно поделиться текстом из виджета EditText через другое приложение (мессенджеры, смс и т.п.). В приложении необходимо использовать Library Data Binding для привязки виджетов. Картинка для imageView: https://goo.su/TpgLD9l.** 
-    
+13. **Реализовать мобильное приложение в Android Studio, с помощью которого по нажатию на картинку (ImageView) можно поделиться текстом из виджета EditText через другое приложение (мессенджеры, смс и т.п.). В приложении необходимо использовать Library Data Binding для привязки виджетов. Картинка для imageView: https://goo.su/TpgLD9l.**
+MainActivity.java
+```java
+package com.example.e13share;
+
+import android.content.ContentResolver;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        ImageView imageView = findViewById(R.id.imageView);
+        Button butt = findViewById(R.id.button);
+        butt.setOnClickListener(v-> {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+            Bitmap bitmap = bitmapDrawable.getBitmap();
+            shareImageandText(bitmap);
+        });
+
+    }
+    private void shareImageandText(Bitmap bitmap) {
+        Uri uri = getmageToShare(bitmap);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+
+        // putting uri of image to be shared
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+
+        // adding text to share
+        intent.putExtra(Intent.EXTRA_TEXT, "Sharing Image");
+
+        // Add subject Here
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Subject Here");
+
+        // setting type to image
+        intent.setType("image/png");
+
+        // calling startactivity() to share
+        startActivity(Intent.createChooser(intent, "Share Via"));
+    }
+
+    // Retrieving the url to share
+    private Uri getmageToShare(Bitmap bitmap) {
+        File imagefolder = new File(getCacheDir(), "images");
+        Uri uri = null;
+        try {
+            imagefolder.mkdirs();
+            File file = new File(imagefolder, "shared_image.png");
+            FileOutputStream outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
+            outputStream.flush();
+            outputStream.close();
+            uri = FileProvider.getUriForFile(this, "com.example.e13share.fileprovider", file);
+        } catch (Exception e) {
+            Toast.makeText(this, "" + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+        return uri;
+    }
+}
+```
+
+AndroidManifest.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <application
+            android:allowBackup="true"
+            android:dataExtractionRules="@xml/data_extraction_rules"
+            android:fullBackupContent="@xml/backup_rules"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/Theme.E13Share"
+            tools:targetApi="31">
+        <activity
+                android:name=".MainActivity"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="com.example.e13share.fileprovider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>
+```
+android_logo кладём в res/drawable
+xml/file_paths.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path name="shared_images" path="images/"/>
+</paths>
+```
+
+activity_main.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/android_logo" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Поделиться" />
+</LinearLayout>
+```
 14. **Реализовать мобильное приложение в Android Studio, в котором по нажатию на кнопку (Button) будет заменяться содержимое экрана, расположенного ниже кнопки. При выполнении задания обязательно использовать фрагменты (динамическая регистрация). Содержимое экранов может быть любое.** 
-    MainActivity.java
-    ```java
-    package com.mirea.kt.ribo.task14;  
+
+MainActivity.java
+```java
+package com.mirea.kt.ribo.task14;  
   
 import android.os.Bundle;  
 import android.view.View;  
@@ -469,9 +1036,164 @@ public class FirstFragment extends Fragment {
     }  
 }
 ```
-15. **Реализовать мобильное приложение в Android Studio, в котором при нажатии на кнопку (Button) создается база данных SQLite с таблицей для хранения списка сообщений (Message). Таблица должна содержать минимум 4 столбца: идентификатор сообщения (число), тело сообщения (строка), дата и время отправки сообщения (строка), флаг является ли сообщение прочитанным или нет.** 
+15. **Реализовать мобильное приложение в Android Studio, в котором при нажатии на кнопку (Button) создается база данных SQLite с таблицей для хранения списка сообщений (Message). Таблица должна содержать минимум 4 столбца: идентификатор сообщения (число), тело сообщения (строка), дата и время отправки сообщения (строка), флаг является ли сообщение прочитанным или нет.**
+MainActivity.java
+```java
+package com.example.e15sqlite;
+
+import android.database.Cursor;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import java.text.SimpleDateFormat;
+
+public class MainActivity extends AppCompatActivity {
+
+    private MessageDatabaseHelper dbHelper;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        dbHelper = new MessageDatabaseHelper(this);
+
+        Button buttonCreateDb = findViewById(R.id.button_create_db);
+        buttonCreateDb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Открытие базы данных (создание, если не существует)
+                dbHelper.getWritableDatabase();
+                Log.i("", "БД создана");
+
+            }
+        });
+        Button buttonAddMessage = findViewById(R.id.button_add_message);
+        buttonAddMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Добавление сообщения в базу данных
+                String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+                dbHelper.addMessage("Hello, World!", timeStamp, false);
+            }
+        });
+        Button buttonShowMessages = findViewById(R.id.button_show_messages);
+        buttonShowMessages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Получение и вывод всех сообщений в логах
+                Cursor cursor = dbHelper.getAllMessages();
+                if (cursor.moveToFirst()) {
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndexOrThrow(MessageDatabaseHelper.COLUMN_ID));
+                        String body = cursor.getString(cursor.getColumnIndexOrThrow(MessageDatabaseHelper.COLUMN_BODY));
+                        String timestamp = cursor.getString(cursor.getColumnIndexOrThrow(MessageDatabaseHelper.COLUMN_TIMESTAMP));
+                        int isRead = cursor.getInt(cursor.getColumnIndexOrThrow(MessageDatabaseHelper.COLUMN_IS_READ));
+                        Log.i("", "Message ID: " + id + ", Body: " + body + ", Timestamp: " + timestamp + ", Is Read: " + (isRead == 1));
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
+        });
+
+    }
+}
+```
+MessageDatabaseHelper.java
+```java
+package com.example.e15sqlite;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+public class MessageDatabaseHelper extends SQLiteOpenHelper {
+
+    private static final String DATABASE_NAME = "messages.db";
+    private static final int DATABASE_VERSION = 1;
+
+    public static final String TABLE_NAME = "messages";
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_BODY = "body";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
+    public static final String COLUMN_IS_READ = "is_read";
+
+    public MessageDatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " ("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_BODY + " TEXT, "
+                + COLUMN_TIMESTAMP + " TEXT, "
+                + COLUMN_IS_READ + " INTEGER)";
+        db.execSQL(CREATE_TABLE);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        onCreate(db);
+    }
+    // Метод для добавления сообщения
+    public void addMessage(String body, String timestamp, boolean isRead) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_BODY, body);
+        values.put(COLUMN_TIMESTAMP, timestamp);
+        values.put(COLUMN_IS_READ, isRead ? 1 : 0);
+        db.insert(TABLE_NAME, null, values);
+        db.close();
+    }
+
+    // Метод для получения всех сообщений
+    public Cursor getAllMessages() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+    }
+}
+```
+activity_main.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/button_create_db"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Создать базу данных" />
+    <Button
+        android:id="@+id/button_add_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Добавить сообщение" />
+    <Button
+        android:id="@+id/button_show_messages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Показать сообщения" />
+
+</LinearLayout>
+```
 16. **Реализовать мобильное приложение в Android Studio, в котором значение (тип String), записанное в поле виджета EditText, сохраняется в хранилище SharedPreferces при нажатии на кнопку (Button). При нажатии на вторую кнопку, значение загружается из SharedPreferences и отображается в TextView и в лог.** 
-    ```java 
+```java 
 package com.example.settingsapp;
  
 import androidx.appcompat.app.AppCompatActivity;
@@ -560,7 +1282,186 @@ public class MainActivity extends AppCompatActivity {
  
 </androidx.constraintlayout.widget.ConstraintLayout>
 ```
-17. **Реализовать мобильное приложение в Android Studio, в котором значение, записанное в поле виджета EditText, сохраняется в текстовый файл во внутренней памяти устройства при нажатии на кнопку (Button). Имя файла задает пользователь (вводит во второй EditText). При сохранении файла необходимо использовать многопоточность (отдельный поток).** 
+17. **Реализовать мобильное приложение в Android Studio, в котором значение, записанное в поле виджета EditText, сохраняется в текстовый файл во внутренней памяти устройства при нажатии на кнопку (Button). Имя файла задает пользователь (вводит во второй EditText). При сохранении файла необходимо использовать многопоточность (отдельный поток).**
+MainActivity.java
+```java
+package com.example.e17saveinside;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText editTextFileName;
+    private EditText editTextContent;
+    private Button buttonSave;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        editTextFileName = findViewById(R.id.editTextFileName);
+        editTextContent = findViewById(R.id.editTextContent);
+        buttonSave = findViewById(R.id.buttonSave);
+
+        buttonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveToFile();
+            }
+        });
+    }
+
+    private void saveToFile() {
+        final String fileName = editTextFileName.getText().toString().trim();
+        final String content = editTextContent.getText().toString().trim();
+
+        if (fileName.isEmpty()) {
+            showToast("Введите имя файла");
+            return;
+        }
+
+        if (content.isEmpty()) {
+            showToast("Введите текст для сохранения");
+            return;
+        }
+
+        // Создаем новый поток для сохранения файла
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                saveToFileInInternalStorage(fileName, content);
+                Looper.loop();
+            }
+        }).start();
+    }
+
+    private void saveToFileInInternalStorage(String fileName, String content) {
+        FileOutputStream fos = null;
+        try {
+            // Получаем директорию внутреннего хранилища приложения
+            File directory = getFilesDir();
+            File file = new File(directory, fileName);
+
+            fos = new FileOutputStream(file);
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fos);
+            outputStreamWriter.write(content);
+            outputStreamWriter.close();
+
+            // Показываем сообщение в основном потоке с помощью Handler
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    showToast("Файл успешно сохранен: " + fileName);
+                    showToast(directory.toString());
+                    Log.i("",directory.toString());
+                    ///data/user/0/com.example.e17saveinside/files
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showToast("Ошибка при сохранении файла: " + e.getMessage());
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void showToast(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+}
+
+```
+AndroidManifest.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.E17SaveInside"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+```
+activity_main.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/editTextFileName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Введите имя файла" />
+
+    <EditText
+        android:id="@+id/editTextContent"
+        android:layout_below="@id/editTextFileName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Введите текст для сохранения" />
+    <Button
+        android:id="@+id/buttonSave"
+        android:layout_below="@id/editTextContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Сохранить" />
+
+</RelativeLayout>
+```
 18. **Реализовать мобильное приложение в Android Studio, в котором по нажатию на кнопку (Button) «Старт» будет запускаться фоновый сервис. В сервисе должен запускаться новый поток через WorkManager (код в отдельном потоке может быть любым). По нажатию на кнопку «Стоп» сервис должен быть остановлен, а задача WorkManager – отменена.** 
     `implementation` `"android.arch.work:work-runtime:1.0.0-alpha02"`
     Создаем класс worker
@@ -595,6 +1496,132 @@ WorkManager.getInstance().enqueue(myWorkRequest);
 WorkManager.getInstance().cancelWorkById(myWorkRequest.getId());
 ```
 19. **Реализовать мобильное приложение в Android Studio, которое загружает содержимое интернет-страницы в лог по нажатию на кнопку (Button). Адрес интернет страницы вводит пользователь в EditText. Допускается использовать любой инструмент для работы с сетью.** 
+MainActivity.java
+```java
+package com.example.e19web2log;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText editTextUrl;
+    private Button buttonLoad;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        editTextUrl = findViewById(R.id.editTextUrl);
+        buttonLoad = findViewById(R.id.buttonLoad);
+
+        buttonLoad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = editTextUrl.getText().toString();
+                loadPage(url);
+            }
+        });
+    }
+
+    private void loadPage(final String urlString) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(urlString);
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    try {
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                        StringBuilder stringBuilder = new StringBuilder();
+                        String line;
+                        while ((line = bufferedReader.readLine()) != null) {
+                            stringBuilder.append(line).append("\n");
+                        }
+                        bufferedReader.close();
+                        Log.d("Page Content", stringBuilder.toString());
+                    } finally {
+                        urlConnection.disconnect();
+                    }
+                } catch (IOException e) {
+                    Log.e("Error", "Error while loading page", e);
+                }
+            }
+        }).start();
+    }
+}
+
+```
+activity_main.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/editTextUrl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter URL"
+        android:inputType="textUri"
+        android:layout_margin="16dp"/>
+
+    <Button
+        android:id="@+id/buttonLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextUrl"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Load Page"/>
+</RelativeLayout >
+```
+AndroidManifest.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.E19Web2Log"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+```
 20. **Реализовать мобильное приложение в Android Studio, которое загружает на сервер с помощью POST-запроса протокола HTTP текстовое сообщение. Текстовое сообщение вводит пользователь в поле виджета EditText. По нажатию на кнопку (Button) выполняется POST-запрос. Сообщение передается в поле «text» тела запроса. Ответ сервера необходимо отобразить в консоль. Допускается использовать любой инструмент для работы с сетью (адрес сервера и url запроса необходимо получить у преподавателя).**
     Реализация через Retrofit
     Create file Api
@@ -1217,3 +2244,597 @@ public class StringTransformation {
 7. Анализируйте результаты: После выполнения программы приступайте к анализу результатов, проверьте правильность работы и убедитесь, что ошибки были исправлены.
 
 Процесс отладки может варьироваться в зависимости от конкретных сценариев и проблем, с которыми вы сталкиваетесь. Однако, общий подход, описанный выше, поможет вам начать отладку вашего Android-приложения в Android Studio.
+
+
+
+
+Теория
+1. Типы данных в Java. Циклы, операторы ветвления.
+   boolean: логический тип данных, принимающий значение true или false.
+   int: целое число размером 4 байта (32 бита), диапазон от -2^31 до 2^31-1.
+   float: число с плавающей точкой одинарной точности размером 4 байта (32 бита).
+   char: одиночный символ, размером 2 байта (16 бит), представленный в кодировке Unicode.
+   String в Java предназначен для работы со строками в Java. Все строковые литералы, определенные в Java программе (например, "abc") — это экземпляры класса String.
+   Цикл for
+   Используется для повторного выполнения блока кода фиксированное количество раз.
+   Цикл while
+   Выполняет блок кода, пока условие истинно.
+   Цикл do-while
+   Выполняет блок кода хотя бы один раз, а затем продолжает выполнение, пока условие истинно.
+   Цикл for-each
+   Используется для перебора элементов коллекций (например, массивов, списков)..
+   Оператор if-else
+   Выполняет один блок кода, если условие истинно, и другой, если ложно.
+   Оператор switch
+   Позволяет выбрать один из нескольких блоков кода для выполнения.x
+2. Понятие ООП. Класс. Переменные и методы класса. Конструкторы. Ключевое слово super.
+   Объектно-ориентированное программирование (ООП) представляет собой подход, который рассматривает программу в качестве набора объектов, взаимодействующих между собой. Каждый из этих объектов имеет свои характеристики и поведение. ООП помогает ускорить процесс написания кода и сделать его более читаемым.
+1. Класс
+   Класс — это шаблон или чертёж для создания объектов. Он определяет атрибуты (переменные) и поведение (методы), которые будут присущи объектам данного класса.
+2. Переменные класса
+   Переменные класса — это переменные, которые принадлежат классу, а не конкретному объекту. Они делятся на два вида:
+   Атрибуты класса (class attributes): общие для всех экземпляров класса.
+   Атрибуты экземпляра (instance attributes): уникальные для каждого экземпляра класса.
+3. Методы класса
+   Методы класса — это функции, которые определены внутри класса и работают с его атрибутами. Они позволяют объектам взаимодействовать с данными и выполнять действия.
+4. Конструкторы
+   Конструктор — это специальный метод класса, который вызывается автоматически при создании нового экземпляра класса.
+   Ключевое слово super
+   Ключевое слово super используется для вызова методов базового класса из производного класса. Это полезно, когда необходимо расширить или модифицировать поведение метода базового класса.
+
+
+3. Принципы ООП. Какие, как и для чего?
+   Принципы ООП:
+1. Инкапсуляция
+   Инкапсуляция — это механизм скрытия внутренней реализации объекта и предоставление доступа к нему только через публичные методы. Это позволяет защитить данные объекта от некорректного использования и изменения.
+2. Наследование
+   Наследование позволяет создавать новый класс на основе существующего класса. Новый класс (производный или дочерний) наследует атрибуты и методы базового (родительского) класса, что позволяет использовать повторно код и расширять функциональность.
+3. Полиморфизм
+   Полиморфизм позволяет использовать один интерфейс для разных типов данных. Это означает, что один и тот же метод может работать по-разному в зависимости от того, на каком объекте он вызывается.
+4. Абстракция
+   Абстракция — это принцип ООП, согласно которому при проектировании классов и создании объектов необходимо выделять только главные свойства сущности, и отбрасывать второстепенные. Абстрактный класс — это класс, который не может быть создан как объект, и часто содержит один или несколько абстрактных методов, которые должны быть реализованы в дочерних классах.
+4. Интерфейсы и абстрактные классы. Отличия. Как создавать и использовать?
+   Абстрактные классы
+   Абстрактный класс в Java - это класс, который не может быть инстанцирован и может содержать абстрактные методы (без реализации), а также методы с реализацией. Классы, которые наследуют абстрактный класс, должны реализовать все его абстрактные методы.
+   Интерфейсы
+   Интерфейс в Java - это контракт, который класс должен соблюдать. Интерфейс определяет набор методов без реализации. Класс, который реализует интерфейс, должен реализовать все его методы. Начиная с Java 8, интерфейсы могут содержать методы с реализацией (default и static методы).
+   Отличия между абстрактными классами и интерфейсами
+   Реализация методов:
+   Абстрактные классы: могут содержать как абстрактные методы (без реализации), так и методы с реализацией.
+   Интерфейсы: до Java 8 могли содержать только абстрактные методы, с Java 8 могут также содержать методы с реализацией (default и static методы).
+   Наследование:
+   Абстрактные классы: класс может наследовать только один абстрактный класс из-за ограничения на единственное наследование в Java.
+   Интерфейсы: класс может реализовывать множество интерфейсов, что позволяет множественное наследование типов.
+   Использование полей:
+   Абстрактные классы: могут содержать поля (переменные) и методы, работающие с этими полями.
+   Интерфейсы: могут содержать только константы (static final переменные).
+
+
+5. Иерархия коллекций в Java. Интерфейсы Iterable и Iterator. Особенности различных коллекций: списки и множества.
+   Коллекциями/контейнерами в Java принято называть классы, основная цель которых – хранить набор других элементов.
+
+Иерархия коллекций в Java
+Основные интерфейсы коллекций:
+Iterable<T>
+Collection<T>
+List<T>
+ArrayList<T>
+LinkedList<T>
+Set<T>
+HashSet<T>
+LinkedHashSet<T>
+TreeSet<T>
+Queue<T>
+PriorityQueue<T>
+LinkedList<T>
+Map<K, V>
+HashMap<K, V>
+LinkedHashMap<K, V>
+TreeMap<K, V>
+Iterable — это интерфейс, который позволяет использовать объекты в усовершенствованном цикле "for-each". Метод iterator() возвращает Iterator, способный перемещаться по элементам с помощью методов hasNext() и next(), и, к тому же, предлагающий возможность удалять элементы с помощью метода remove().
+
+
+Интерфейс Iterator
+Интерфейс Iterator предоставляет методы для последовательного доступа к элементам коллекции:
+
+Особенности различных коллекций: списки и множества
+Списки (List)
+Список — это упорядоченная коллекция, которая позволяет дублирование элементов. Основные реализации List:
+ArrayList: основан на массиве, обеспечивает быстрый доступ по индексу, но медленные операции вставки и удаления из середины.
+LinkedList: основан на двусвязном списке, обеспечивает быструю вставку и удаление, но медленный доступ по индексу.
+Множества (Set)
+Множество — это коллекция, которая не допускает дублирования элементов. Основные реализации Set:
+HashSet: использует хеш-таблицу для хранения элементов, обеспечивает быстрое добавление, удаление и проверку наличия элементов, но не гарантирует порядка элементов.
+LinkedHashSet: сохраняет порядок добавления элементов, основан на хеш-таблице и связном списке.
+TreeSet: хранит элементы в отсортированном порядке, основан на красно-чёрном дереве.
+
+6. Сортировка в коллекциях. Компаратор.
+   Сортировка в коллекциях
+   Java предоставляет несколько способов сортировки коллекций, включая использование интерфейсов Comparable и Comparator. Вот основные методы сортировки:
+   Сортировка с использованием Comparable: Классы, реализующие интерфейс Comparable, могут быть отсортированы по естественному порядку. Метод compareTo определяет, как объекты должны быть сравнены.
+   Сортировка с использованием Comparator: Интерфейс Comparator позволяет определять несколько стратегий сортировки для класса. Метод compare определяет, как объекты должны быть сравнены.
+   Comparable используется для определения естественного порядка объектов, а Comparator — для определения различных стратегий сортировки.
+
+7. Как работать с HashMap.
+   HashMap в Java является одной из самых часто используемых реализаций интерфейса Map, который предоставляет структуру данных для хранения пар "ключ-значение". Она реализована на основе хеш-таблицы и обеспечивает быстрый доступ к значениям по ключам. В HashMap ключи не могут дублироваться, но значения могут быть одинаковыми. HashMap не гарантирует порядка элементов. Добавление нового элемента с существующим ключом меняет его значение.
+8. Обработка исключений. Виды исключений. Проброс исключений.
+   Исключения в Java представляют собой механизм, позволяющий управлять ошибками и другими исключительными ситуациями, которые могут возникнуть во время выполнения программы. Этот механизм позволяет отделить код обработки ошибок от основного кода и упрощает управление ошибками.
+   Виды исключений
+   Исключения в Java делятся на три основные категории:
+   Checked exceptions (Проверяемые исключения): Эти исключения проверяются компилятором на этапе компиляции. Если метод может выбросить проверяемое исключение, то он должен либо обработать его внутри блока try-catch, либо объявить его в секции throws метода.
+   Примеры: IOException, SQLException.
+   Unchecked exceptions (Непроверяемые исключения): Эти исключения являются потомками RuntimeException. Они не проверяются компилятором на этапе компиляции, и разработчик не обязан явно обрабатывать их или объявлять в секции throws метода.
+   Примеры: NullPointerException, ArrayIndexOutOfBoundsException.
+   Errors (Ошибки): Ошибки представляют собой исключения, которые указывают на серьезные проблемы, обычно связанные с выполнением JVM, такие как нехватка памяти (OutOfMemoryError). Обычно их не следует обрабатывать в приложениях.
+   Примеры: OutOfMemoryError, StackOverflowError.
+   В Java для обработки исключений используются блоки try, catch, finally и ключевое слово throws.
+   Блок try-catch: Блок try используется для оборачивания кода, который может выбросить исключение. Блок catch используется для обработки этого исключения.
+
+Блок finally: Блок finally содержит код, который будет выполнен в любом случае, независимо от того, было выброшено исключение или нет. Он часто используется для освобождения ресурсов.
+
+Проброс исключений
+Иногда необходимо пробросить исключение из метода, чтобы его обработали на более высоком уровне. Для этого используется ключевое слово throw и throws.
+Ключевое слово throws: Ключевое слово throws используется в объявлении метода для указания, какие исключения этот метод может выбросить.
+
+
+9. Работа с файлами. Потоки ввода/вывода.
+   Основные классы для работы с файлами
+   Java предоставляет множество классов для работы с файлами и потоками ввода/вывода, в том числе:
+   File
+   FileInputStream и FileOutputStream
+   FileReader и FileWriter
+   BufferedReader и BufferedWriter
+   PrintWriter
+1. Класс File
+   Класс File представляет файл или директорию в файловой системе. Он предоставляет методы для работы с атрибутами файла и выполнения операций над файлами и директориями.
+2. Классы FileInputStream и FileOutputStream
+   Эти классы используются для работы с байтовыми потоками ввода и вывода. FileInputStream позволяет читать байты из файла, а FileOutputStream — записывать байты в файл.
+3. Классы FileReader и FileWriter
+   Эти классы используются для работы с символьными потоками ввода и вывода. FileReader позволяет читать символы из файла, а FileWriter — записывать символы в файл.
+4. Классы BufferedReader и BufferedWriter
+   Эти классы используются для повышения эффективности ввода и вывода за счет использования буферов. Они оборачивают потоки Reader и Writer для обеспечения более эффективного чтения и записи.
+5. Класс PrintWriter
+   Класс PrintWriter предоставляет удобные методы для записи отформатированных данных в текстовый файл.
+
+
+10. Сериализация данных. Интерфейсы Serializable и Externalizable.
+    Сериализация в Java — это процесс преобразования объекта в поток байтов, который может быть сохранен в файл или передан по сети. Десериализация — это обратный процесс, при котором поток байтов преобразуется обратно в объект. Сериализация полезна для сохранения состояния объекта, передачи объектов между различными компонентами системы или передаче объектов по сети.
+    Интерфейс Serializable
+    Интерфейс Serializable — это маркерный интерфейс, который не содержит методов. Класс, который реализует этот интерфейс, становится сериализуемым, то есть его объекты могут быть преобразованы в поток байтов.
+    Интерфейс Externalizable
+    Интерфейс Externalizable предоставляет более гибкий механизм сериализации. Он требует реализации двух методов: writeExternal и readExternal. Это позволяет полностью контролировать процесс сериализации и десериализации.
+    Отличия между Serializable и Externalizable
+    Контроль над процессом сериализации:
+    Serializable: Автоматически сериализует все не transient и не static поля класса. Разработчик может переопределить методы writeObject и readObject для дополнительного контроля.
+    Externalizable: Требует реализации методов writeExternal и readExternal, предоставляя полный контроль над процессом сериализации и десериализации.
+    Производительность:
+    Serializable: Процесс автоматический, но может быть медленнее из-за необходимости сериализовать все поля и обработки дополнительных метаданных.
+    Externalizable: Может быть быстрее, так как разработчик может оптимизировать процесс, сериализуя только необходимые данные.
+    Простота использования:
+    Serializable: Легче использовать, так как не требует реализации дополнительных методов.
+    Externalizable: Требует больше кода и внимания к деталям, но позволяет оптимизировать сериализацию.
+
+11. Процессы и потоки (отличия). Создание потоков в Java. Thread и Runnable.
+    В операционной системе процесс является исполняемой программой, которая находится в состоянии выполнения. Каждый процесс обладает своим собственным адресным пространством, которое включает код программы, данные и ресурсы, необходимые для выполнения программы.
+    Потоки же представляют собой более легкие и меньшие единицы исполнения внутри процесса. В одном процессе может быть запущено несколько потоков, которые могут выполняться параллельно или конкурентно, используя общие ресурсы и память процесса. Основные отличия между процессами и потоками:
+    Процессы:
+    Каждый процесс имеет своё собственное адресное пространство.
+    Процессы обычно независимы друг от друга и не могут напрямую взаимодействовать без использования механизмов межпроцессного взаимодействия (IPC).
+    Процессы являются более тяжеловесными по сравнению с потоками, так как требуют выделения отдельных ресурсов операционной системой.
+    Потоки:
+    Потоки существуют в рамках процесса и используют его общие ресурсы и память.
+    Потоки могут выполняться параллельно или конкурентно, что позволяет эффективнее использовать многопроцессорные системы.
+    Потоки могут легко взаимодействовать друг с другом через общие данные и переменные.
+    Создание потоков в Java
+    В Java потоки могут быть созданы двумя основными способами: с использованием класса Thread и с использованием интерфейса Runnable.
+    Общие замечания по созданию и использованию потоков
+    При использовании класса Thread, вы не можете наследовать другие классы, так как Java поддерживает только одиночное наследование. В то время как при использовании Runnable вы можете реализовать интерфейс и расширить другие классы.
+    Использование интерфейса Runnable обычно считается предпочтительным подходом, так как он обеспечивает лучшую модульность и расширяемость.
+    Для выполнения конкретной работы в потоке, вы должны переопределить метод run(), который будет выполняться в отдельном потоке при вызове start().
+    Потоки в Java могут быть остановлены с использованием метода interrupt() или путем естественного завершения выполнения метода run().
+
+12. Синхронизация потоков. Использование synchronized. Semaphore.
+    В Java синхронизация потоков является важным аспектом многопоточного программирования, который позволяет обеспечить правильное взаимодействие между потоками при доступе к общим ресурсам или при выполнении критических секций кода. В этом контексте используются ключевое слово synchronized и классы из пакета java.util.concurrent, такие как Semaphore.
+    Использование synchronized
+    Ключевое слово synchronized используется для определения критических секций кода, которые могут быть выполнены только одним потоком одновременно. Это позволяет избежать состояний гонки и обеспечить корректное состояние общих ресурсов.
+    Использование Semaphore
+    Semaphore — это класс из пакета java.util.concurrent, который позволяет контролировать доступ к общему ресурсу через указанное количество разрешений (пермитов).
+
+13. Внутренние классы. Анонимные классы. Функциональный интерфейс. Lambda-выражения.
+    Внутренние классы
+    Внутренний класс в Java — это класс, определенный внутри другого класса. Внутренние классы могут быть статическими или нестатическими.
+    Нестатические внутренние классы
+    Нестатический внутренний класс имеет доступ ко всем членам внешнего класса, включая его приватные члены.
+    Статические внутренние классы
+    Статический внутренний класс не имеет доступа к нестатическим членам внешнего класса и может быть использован без создания экземпляра внешнего класса.
+
+Анонимные классы
+Анонимный класс — это класс без имени, который определяется и создается одновременно внутри метода или другого выражения. Он может быть полезен для реализации интерфейсов или абстрактных классов на лету.
+
+Функциональные интерфейсы
+Функциональный интерфейс — это интерфейс, который содержит только один абстрактный метод. Функциональные интерфейсы часто используются вместе с lambda-выражениями.
+Lambda-выражения
+Lambda-выражения представляют собой компактный способ представления анонимных функций (функций без имени). Они могут быть использованы вместо анонимных классов, когда интерфейс содержит только один абстрактный метод (функциональный интерфейс).
+
+14. Java Stream API.
+    Stream API – это инструмент языка Java, который позволяет использовать
+    функциональный стиль при работе с разными структурами данных и
+    упрощать операции: фильтрации, сортировки и другие манипуляции.
+    Вся основная функциональность данного API сосредоточена в пакете
+    java.util.stream.
+    Ключевым понятием в Stream API является поток данных.
+    Промежуточные и терминальные операции
+    Примеры промежуточных операций:
+    filter(Predicate) - фильтрация элементов по заданному условию.
+    map(Function) - преобразование каждого элемента в другой объект.
+    sorted() - сортировка элементов.
+    Примеры терминальных операций:
+    forEach(Consumer) - применение операции к каждому элементу.
+    collect(Collectors) - сбор элементов потока в коллекцию или другую структуру данных.
+    reduce(BinaryOperator) - выполнение агрегатных операций (например, суммирование, нахождение максимума).
+
+
+15. Структура Android-приложения. Ресурсы приложения. Permissions. Зачем нужен Gradle?
+    Структура Android-приложения включает в себя несколько ключевых компонентов и ресурсов, которые важны для разработки и сборки приложения:
+    Манифест файл (AndroidManifest.xml):
+    Этот файл содержит основную информацию о приложении, такую как имя пакета приложения, версия, разрешения, список компонентов приложения (Activity, Service, BroadcastReceiver), а также другие настройки, необходимые для работы приложения на устройстве Android.
+    Java и Kotlin исходные файлы:
+    Код приложения написан на языках программирования Java или Kotlin. Основные компоненты приложения, такие как Activity, Service, BroadcastReceiver, и Fragment, определяются и реализуются в этих файлах.
+    Ресурсы (res):
+    В директории res хранятся все ресурсы, необходимые для приложения, такие как макеты экранов (layout), изображения, строки, стили, цвета, анимации и т.д.
+    Ресурсы упрощают локализацию, масштабирование и изменение внешнего вида приложения без изменения кода.
+    Assets:
+    Директория assets используется для хранения файлов, доступ к которым осуществляется через API. Например, это могут быть текстовые файлы, звуки, видео и другие необработанные ресурсы.
+    Gradle файлы (build.gradle):
+    Файлы build.gradle содержат инструкции по сборке проекта с использованием системы сборки Gradle. Они определяют зависимости проекта, конфигурации сборки, плагины и другие параметры проекта.
+    Ресурсы приложения
+    Ресурсы Android-приложения включают в себя все файлы, используемые для отображения пользовательского интерфейса, локализации текста, управления изображениями и другими элементами в приложении. Они хранятся в директории res и разделены на различные подкаталоги:
+    layout: XML-файлы, описывающие макеты экранов пользовательского интерфейса.
+    drawable: Различные изображения (PNG, JPEG, SVG), которые используются в приложении для отображения и фонов.
+    values: Ресурсы для хранения строк, стилей, цветов и размеров, которые могут использоваться в различных частях приложения.
+    Permissions (Разрешения)
+    В Android каждое приложение работает в изолированной среде без доступа к данным других приложений по умолчанию. Разрешения (Permissions) позволяют приложениям получить доступ к определенным ресурсам и функциям устройства. Например, доступ к камере, контактам, местоположению, файловой системе и т.д. Запрос разрешений обычно выполняется в манифесте приложения (AndroidManifest.xml) и требует согласия пользователя при первом запуске приложения.
+    Зачем нужен Gradle?
+    Gradle — это мощная система сборки проектов, используемая в разработке Android-приложений. Вот основные задачи, которые выполняет Gradle:
+    Управление зависимостями: Gradle позволяет легко добавлять и управлять зависимостями, такими как библиотеки и внешние модули, необходимые для проекта.
+    Конфигурация проекта: С помощью Gradle можно настроить различные аспекты сборки проекта, включая версии компиляторов, пути к ресурсам, настройки проекта и другие параметры.
+    Автоматизация сборки: Gradle обеспечивает автоматизацию процесса сборки, что позволяет ускорить разработку, упростить тестирование и развертывание приложений.
+    Поддержка многомодульных проектов: Gradle позволяет эффективно управлять проектами с несколькими модулями и библиотеками, обеспечивая легкость сопровождения и развития проекта.
+    Интеграция с Android Studio: Gradle интегрирован в среду разработки Android Studio и используется по умолчанию для сборки проектов, что обеспечивает единый и удобный рабочий процесс для разработчиков.
+
+16. Компонент Activity и его жизненный цикл. Методы класса Activity.
+    Компонент Activity является одним из основных строительных блоков приложений на платформе Android. Activity представляет собой экран с пользовательским интерфейсом, с которым пользователь может взаимодействовать. Каждая Activity представляет собой один экран приложения, и они работают вместе для создания полноценного пользовательского интерфейса приложения.
+    Жизненный цикл Activity
+    Жизненный цикл Activity состоит из различных состояний и методов, которые позволяют управлять поведением и состоянием Activity в различные моменты времени. Важно понимать, что каждое состояние жизненного цикла имеет соответствующие методы, которые можно переопределить для выполнения дополнительных действий в нужный момент.
+    Основные состояния и методы жизненного цикла Activity:
+    Создание (onCreate()):
+    Метод onCreate() вызывается при создании новой Activity.
+    Здесь обычно выполняется начальная настройка Activity, загрузка ресурсов и установка пользовательского интерфейса.
+    Запуск (onStart()):
+    Метод onStart() вызывается, когда Activity становится видимой для пользователя.
+    Здесь можно выполнять операции, которые должны происходить, когда Activity отображается на экране.
+    Возобновление (onResume()):
+    Метод onResume() вызывается, когда Activity возвращается к активному состоянию после приостановки или возвращения из другой Activity.
+    В этом методе можно восстанавливать ресурсы, начинать анимации или запускать потоки.
+    Приостановка (onPause()):
+    Метод onPause() вызывается, когда Activity теряет фокус, но остается видимой.
+    Здесь обычно выполняются операции по сохранению данных или приостановке операций, которые не должны продолжаться в фоновом режиме.
+    Остановка (onStop()):
+    Метод onStop() вызывается, когда Activity больше не видима пользователю.
+    Здесь обычно освобождаются ресурсы или сохраняются данные, которые могут быть утеряны.
+    Уничтожение (onDestroy()):
+    Метод onDestroy() вызывается, когда Activity уничтожается.
+    В этом методе обычно освобождаются все ресурсы и завершаются необходимые операции.
+    Дополнительные методы жизненного цикла:
+    onRestart(): Вызывается, когда Activity была остановлена, а затем запущена снова перед возобновлением.
+    onSaveInstanceState(Bundle outState) и onRestoreInstanceState(Bundle savedInstanceState): Используются для сохранения и восстановления состояния Activity при изменении конфигурации устройства или временной приостановки.
+    Методы класса Activity
+    Класс Activity предоставляет множество методов, которые можно переопределить для управления его поведением и интерфейсом. Некоторые из наиболее часто используемых методов включают:
+    setContentView(int layoutResID): Устанавливает макет (layout) для Activity.
+    findViewById(int id): Находит и возвращает представление (View) по его идентификатору.
+    startActivity(Intent intent) и startActivityForResult(Intent intent, int requestCode): Запускают новую Activity или ожидают результата от запущенной Activity.
+    finish(): Завершает текущую Activity и возвращает управление вызывающей Activity или системе.
+    onBackPressed(): Вызывается при нажатии кнопки "назад" на устройстве, обычно используется для управления навигацией.
+
+17. Обработка событий. Слушатели событий.
+    Обработка событий в Java часто включает использование слушателей событий (event listeners), которые позволяют приложению реагировать на действия пользователя или изменения в системе. Давайте рассмотрим основные концепции и примеры использования слушателей событий в Java.
+    Концепция слушателей событий
+    Слушатель событий (event listener) в Java является интерфейсом, который содержит один или несколько методов, предназначенных для обработки определенного типа событий. Объект, реализующий слушатель, добавляется в качестве обработчика событий к компоненту или источнику событий. Когда происходит событие, соответствующий метод слушателя вызывается, что позволяет приложению реагировать на это событие.
+    Объяснение примера
+    Создание окна и кнопки: Создаем графическое окно (JFrame) и кнопку (JButton) в методе main.
+    Создание слушателя событий: Создаем объект класса, реализующего интерфейс ActionListener, который определяет метод actionPerformed(ActionEvent e). В данном примере используется анонимный класс для реализации интерфейса.
+    Добавление слушателя к кнопке: Метод addActionListener() используется для добавления созданного слушателя к кнопке. Этот метод гарантирует, что слушатель будет уведомлен при каждом клике на кнопку.
+    Обработка события: В методе actionPerformed() указывается, какие действия должны выполняться при каждом клике на кнопку. В данном случае выводится диалоговое окно с сообщением "Button Clicked!".
+
+18. Объект Intent. Явные и неявные намерения. Как используются и для чего?
+    Объект Intent является ключевым элементом в Android для взаимодействия между компонентами приложения, а также для взаимодействия с компонентами других приложений. Он используется для передачи данных, запуска компонентов (таких как Activity, Service, BroadcastReceiver) и выполнения различных операций в Android-приложениях.
+    Явные и неявные намерения (Intents)
+    Явные намерения (Explicit Intents):
+    Явные намерения используются для запуска компонента приложения по его имени (пакету) или классу.
+    Такой тип намерения явно указывает на целевой компонент, с которым нужно взаимодействовать.
+    Пример использования явного намерения для запуска новой Activity:
+    Неявные намерения (Implicit Intents):
+    Неявные намерения используются для запуска компонента приложения, который может обрабатывать определенный тип действия или иметь определенный набор данных.
+    Неявное намерение может быть обработано несколькими компонентами, что дает пользователю выбор, какое приложение использовать для выполнения действия.
+    Пример использования неявного намерения для отправки текстового сообщения:
+    Как используются и для чего?
+    Передача данных между компонентами: Intent используется для передачи данных между различными компонентами приложения, такими как Activity, Service, BroadcastReceiver.
+    Запуск новых экранов (Activity): Intent используется для запуска новых экранов пользовательского интерфейса (Activity), как явных, так и неявных.
+    Выполнение действий вне приложения: Неявные намерения позволяют запускать действия, которые могут быть выполнены различными приложениями на устройстве, такими как отправка сообщений, открытие URL-адресов, воспроизведение медиафайлов и т.д.
+    Интеграция с системными службами и функциями: Intent позволяет интегрироваться с системными службами, такими как камера, контакты, календарь, что упрощает доступ к функциональности устройства.
+
+19. Особенности создания фрагментов. Где используются? Способы обмена данными между Activity и Fragment.
+    Фрагменты (fragments) – это UI-модули, используемые для разделения
+    интерфейса пользователя на отдельные части, которые могут быть
+    использованы в одной или разных activities.
+    Жизненный цикл: Фрагменты имеют свой собственный жизненный цикл, который включает методы, аналогичные методам жизненного цикла Activity (например, onCreate(), onStart(), onResume(), и т.д.).
+    Макеты и UI: Фрагменты могут иметь свои собственные макеты (layout) и пользовательский интерфейс, аналогично Activity. Они могут содержать в себе другие фрагменты или быть частью макета Activity.
+    Гибкость и повторное использование: Фрагменты предоставляют гибкость в управлении множественными экранами и их взаимодействием. Они могут использоваться повторно в различных Activity или в одном Activity.
+    Динамическое добавление и управление: Фрагменты могут быть добавлены или удалены динамически во время выполнения (runtime), что позволяет адаптировать пользовательский интерфейс к различным условиям и устройствам.
+    Где используются фрагменты?
+    Фрагменты часто используются в следующих случаях:
+    Многопанельные интерфейсы: Например, на планшетных устройствах можно использовать фрагменты для отображения различных частей интерфейса одновременно на одном экране.
+    Динамические пользовательские интерфейсы: Фрагменты позволяют создавать сложные и динамические пользовательские интерфейсы, которые могут меняться в зависимости от действий пользователя или условий экрана.
+    Переиспользование компонентов: Фрагменты могут быть использованы для создания повторно используемых компонентов интерфейса, что упрощает разработку и поддержку приложения.
+    Способы обмена данными между Activity и Fragment
+    Обмен данными между Activity и Fragment может происходить различными способами, в зависимости от конкретных требований приложения:
+    Аргументы фрагмента: Фрагменты могут получать данные через аргументы (Bundle), которые передаются при создании фрагмента. Это подходит для передачи статических данных при создании фрагмента.
+    Методы фрагмента: Фрагмент может содержать методы, через которые Activity может передавать данные или вызывать операции над фрагментом.
+    Интерфейсы обратного вызова (Callback Interfaces): Activity может реализовать интерфейс, определенный в фрагменте, что позволяет фрагменту обратиться к Activity и передать данные или уведомить об изменениях.
+
+
+20. ActionBar и Toolbar. Как создается меню в приложениях?
+    В Android для создания пользовательского интерфейса верхнего меню (action bar) можно использовать как классический ActionBar, так и более гибкий Toolbar. Давайте рассмотрим оба подхода и процесс создания меню в приложениях.
+    ActionBar
+    ActionBar был стандартным способом добавления верхнего меню в Android до версии 5.0 (API уровень 21). Он представляет собой полосу действий в верхней части экрана, где могут располагаться элементы управления и меню.
+    Toolbar
+    Toolbar был представлен в Material Design и представляет собой более гибкий и настраиваемый способ добавления верхнего меню в Android. Он заменил ActionBar как рекомендованный инструмент для создания верхнего меню начиная с версии 5.0 (API уровень 21).
+
+
+21. Зачем используются адаптеры. RecyclerView.Adapter. Паттерн ViewHolder.
+    Адаптеры и паттерн ViewHolder являются основными компонентами для работы с RecyclerView в Android. Давайте рассмотрим их подробнее:
+    Адаптеры в RecyclerView
+    RecyclerView.Adapter - это класс, который связывает данные с RecyclerView, отвечая за создание новых элементов, наполнение их данными и обеспечение взаимодействия с пользователем. Вот основные задачи адаптера:
+    Создание новых View: Адаптер создает новые представления (виджеты) для элементов списка.
+    Привязка данных к View: Адаптер берет данные из источника данных и привязывает их к соответствующим представлениям.
+    Обработка взаимодействия: Адаптер может обрабатывать пользовательские взаимодействия, такие как нажатия на элементы списка.
+    Паттерн ViewHolder
+    ViewHolder - это паттерн, используемый для оптимизации производительности RecyclerView. Он представляет собой класс, который хранит ссылки на виджеты, составляющие элемент списка. Использование ViewHolder позволяет избежать многократного поиска виджетов в дереве представлений, что ускоряет работу RecyclerView.
+    Основные задачи ViewHolder:
+    Хранение представлений: ViewHolder хранит ссылки на виджеты, составляющие элемент списка (например, TextView, ImageView и т.д.).
+    Повторное использование представлений: Вместо создания новых представлений для каждого элемента списка, RecyclerView повторно использует существующие представления, уменьшая нагрузку на систему.
+    Как это работает вместе
+    Создание ViewHolder:
+    Когда RecyclerView требуется новое представление для элемента, он вызывает метод onCreateViewHolder() у адаптера.
+    Адаптер создает новое представление и оборачивает его в объект ViewHolder.
+    Привязка данных:
+    Когда RecyclerView нужно заполнить элемент данными, он вызывает метод onBindViewHolder() у адаптера.
+    Адаптер берет данные из своего источника и привязывает их к виджетам, хранящимся в ViewHolder.
+    Повторное использование:
+    RecyclerView повторно использует ViewHolder для различных элементов списка, вызывая onBindViewHolder() с новыми данными.
+    Пример:
+
+В этом примере:
+MyViewHolder хранит ссылку на TextView.
+onCreateViewHolder() создает новое представление для элемента списка.
+onBindViewHolder() привязывает данные к представлению.
+getItemCount() возвращает количество элементов в источнике данных.
+Использование адаптеров и паттерна ViewHolder позволяет эффективно управлять списками данных в Android-приложениях, обеспечивая высокую производительность и гибкость.
+22. Особенности работы с файловой системой в Android для разных версий операционной системы. External и Internal Storage.
+    Internal Storage представляет собой внутреннее хранилище информации, которое есть на каждом телефоне независимо от поддержки карт памяти. Эта область памяти располагается в системном разделе /data и является защищенной.
+    External Storage представляет собой внешнее хранилище информации, которое (как правило) есть на каждом телефоне в виде sd-карты или физической не извлекаемой памяти.
+    Работа с файловой системой в Android
+    Internal Storage
+    Доступ: Только ваше приложение.
+    Удаление: При удалении приложения.
+    Применение: Хранение конфиденциальных данных.
+    External Storage
+    Доступ: Все приложения (при наличии разрешений).
+    Удаление: Пользователь может удалить вручную.
+    Применение: Хранение мультимедиа, данных, общих для всех приложений.
+    Версии ОС и особенности
+    Android 10 и выше (Scoped Storage)
+    Особенности: Приложения имеют изолированное хранилище на External Storage.
+    Доступ: К общим файлам нужен специальный доступ (разрешения).
+    MediaStore API: Для доступа к медиафайлам.
+    Android 9 и ниже
+    Особенности: Приложения имеют полный доступ к External Storage (с разрешениями).
+    Разрешения: READ_EXTERNAL_STORAGE и WRITE_EXTERNAL_STORAGE требуются для чтения/записи.
+    Примеры использования:
+    Internal Storage:
+
+External Storage:
+
+
+23. База данных SQLite. Особенности, как создать и использовать. Методы класса SQLiteDatabase.
+    SQLite в Android
+    SQLite – встраиваемая реляционная база данных
+    Хранит все таблицы (данные) в одном файле
+    Допускает чтение данных из разных потоков (запись – только из одного)
+    Особенности
+    Локальная база данных: Хранение данных внутри приложения.
+    Не требует серверной части: Всё хранится на устройстве.
+    Поддержка SQL: Стандартные SQL-запросы.
+    Легковесная: Оптимизирована для мобильных устройств.
+    Создание и использование SQLite
+    Шаги создания и использования базы данных SQLite в Android:
+    Создание и управление базой данных:
+    Использование класса SQLiteOpenHelper.
+    Открытие базы данных:
+    Методы класса SQLiteDatabase.
+    Выполнение операций (CRUD):
+    Вставка, обновление, удаление и чтение данных.
+    Пример создания базы данных
+    Создание класса, наследующего SQLiteOpenHelper:
+
+2. Использование базы данных в активности:
+
+Методы класса SQLiteDatabase
+openOrCreateDatabase(String name, int mode, SQLiteDatabase.CursorFactory factory): Открывает или создает базу данных.
+execSQL(String sql): Выполняет SQL-запрос, не возвращающий данные (CREATE, INSERT и т.д.).
+insert(String table, String nullColumnHack, ContentValues values): Вставляет строку в таблицу.
+update(String table, ContentValues values, String whereClause, String[] whereArgs): Обновляет строки в таблице.
+delete(String table, String whereClause, String[] whereArgs): Удаляет строки из таблицы.
+query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy): Запрашивает строки из таблицы.
+rawQuery(String sql, String[] selectionArgs): Выполняет SQL-запрос, возвращающий данные (SELECT).
+24. База данных Realm. Особенности, как создать и использовать. Какие преимущества?
+    Realm в Android
+    Realm – это нативная кроссплатформенная noSQL база данных от MongoDB
+    В 10 раз быстрее SQLite (наверное )
+    Требует отдельного подключения через Gradle и JDK не ниже 11 версии
+    Поддерживает синхронные и асинхронные методы работы с данными
+    Особенности
+    Легковесная и быстрая: Realm предлагает высокую производительность и низкую задержку для операций с данными.
+    Объектно-ориентированная: Использует объекты вместо строковых SQL-запросов.
+    Реактивность: Изменения в данных могут автоматически обновлять UI.
+    Многопоточность: Поддерживает работу с данными из разных потоков.
+    Легкость миграций: Упрощает управление изменениями в структуре данных.
+    Преимущества Realm
+    Простота использования: Работа с объектами Java/Kotlin вместо SQL-запросов.
+    Высокая производительность: Быстрее SQLite для большинства операций.
+    Автоматические обновления: Реактивные объекты, обновляющие UI при изменении данных.
+    Кроссплатформенность: Поддержка Android и iOS.
+    Создание и использование Realm
+    Шаги создания и использования базы данных Realm:
+    Добавление зависимости:
+    В build.gradle:
+
+Инициализация Realm:
+
+3. Создание модели данных:
+
+4. Работа с базой данных:
+
+25. Хранилище Shared Preferences. Для чего используется. Какие типы данных можно хранить. Как сохранять и загружать данные.
+    Назначение
+    Shared Preferences используется для хранения простых данных в виде пар ключ-значение. Это удобный способ сохранять настройки приложения и другую небольшую информацию, которая должна быть доступна между запусками приложения.
+    Типы данных
+    Shared Preferences поддерживает хранение следующих типов данных:
+    boolean
+    float
+    int
+    long
+    String
+    Set<String>
+    Как сохранять и загружать данные
+    Сохранение данных
+    Для сохранения данных необходимо получить объект SharedPreferences.Editor и использовать методы для вставки данных, затем вызвать apply() или commit() для сохранения изменений.
+    Пример:
+
+Загрузка данных
+Для загрузки данных необходимо получить объект SharedPreferences и использовать методы для получения значений по ключам.
+Пример:
+
+Примечания
+apply() vs commit(): apply() сохраняет изменения асинхронно, а commit() синхронно. apply() предпочтительнее для большинства случаев, так как он быстрее.
+Чтение значений: Если ключ не существует, возвращается значение по умолчанию, указанное в методах получения.
+26. Компоненты приложения. Services. Виды сервисов. Особенности запуска сервиса для разных версий Android.
+    Сервисы (Services) - это компоненты приложения, предназначенные для выполнения длительных операций в фоновом режиме. Сервисы не имеют пользовательского интерфейса и продолжают работать даже при переключении между приложениями.
+    Виды сервисов
+    Foreground Service (Передний план)
+    Описание: Сервисы, которые выполняют операции, о которых пользователь должен знать. Например, воспроизведение музыки.
+    Уведомление: Требуют отображения уведомления.
+    Пример: Медиаплеер, который продолжает воспроизводить музыку, даже когда приложение не активно.
+    Background Service (Фоновые)
+    Описание: Сервисы, выполняющие задачи в фоне. В Android 8.0 (API 26) и выше их использование ограничено для повышения производительности и экономии заряда батареи.
+    Пример: Загрузка файлов.
+    Bound Service (Связанные)
+    Описание: Сервисы, которые предоставляют клиентам интерфейс для взаимодействия. Клиенты могут привязываться к сервису и вызывать его методы.
+    Пример: Сервисы, которые предоставляют данные или выполняют вычисления по запросу.
+    Особенности запуска сервиса для разных версий Android
+    Android 8.0 (API 26) и выше
+    Ограничения на фоновую работу: Фоновые сервисы могут работать только ограниченное время, если приложение не активно.
+    Foreground Service: Чтобы избежать ограничений, сервисы должны быть переведены в передний план с помощью метода startForeground().
+    JobScheduler и WorkManager: Для выполнения фоновых задач рекомендуется использовать JobScheduler или WorkManager.
+    Android 7.1 (API 25) и ниже
+    Меньше ограничений: Фоновые сервисы могут выполняться без ограничений, если приложение находится в фоне.
+    Уведомления для длительных операций: Рекомендуется использовать уведомления для длительных операций, но это не обязательно.
+    onCreate(): Вызывается при создании сервиса.
+    onStartCommand(Intent intent, int flags, int startId): Вызывается при каждом запуске сервиса с помощью startService().
+    onBind(Intent intent): Вызывается при привязке клиента к сервису с помощью bindService().
+    onDestroy(): Вызывается при завершении работы сервиса.
+27. Компоненты приложения. Broadcast Receivers. Особенности регистрации «слушателей» (статический и динамический способ).
+    Назначение
+    Broadcast Receivers (Приёмники широковещательных сообщений) — это компоненты приложения, которые позволяют приложению получать уведомления о событиях, происходящих на устройстве или в системе. Примеры событий включают низкий заряд батареи, изменение состояния сети, получение SMS и другие.
+    Особенности регистрации «слушателей»
+    Broadcast Receivers могут быть зарегистрированы двумя способами: статическим и динамическим.
+    Статическая регистрация
+    Статическая регистрация выполняется в файле AndroidManifest.xml. Приёмник, зарегистрированный таким образом, может получать широковещательные сообщения, даже если приложение не запущено.
+    Пример:
+
+Преимущества:
+Приёмник работает, даже если приложение не запущено.
+Не требуется дополнительного кода для регистрации.
+Недостатки:
+Более ограниченный доступ к ресурсам.
+Не все широковещательные сообщения могут быть зарегистрированы статически из-за изменений в Android 8.0 (API 26) и выше.
+Динамическая регистрация
+Динамическая регистрация выполняется программно в коде активности или сервиса. Обычно это делается в методе onCreate() и удаляется в onDestroy().
+Преимущества:
+Полный контроль над жизненным циклом приёмника.
+Могут использоваться с любыми широковещательными сообщениями.
+Недостатки:
+Приёмник работает только, когда приложение активно.
+Требуется больше кода для регистрации и удаления.
+Пример Broadcast Receiver:
+
+Изменения в Android 8.0 (API 26) и выше
+В Android 8.0 и выше введены ограничения на статическую регистрацию широковещательных сообщений для повышения производительности и экономии батареи. Многие системные широковещательные сообщения больше не могут быть зарегистрированы в AndroidManifest.xml и должны регистрироваться динамически.
+Примеры таких сообщений:
+ACTION_BOOT_COMPLETED
+ACTION_BATTERY_LOW
+ACTION_POWER_CONNECTED
+и другие.
+28. Главный поток. Инструменты многопоточности в Android-приложениях.
+    Главный поток (Main Thread), также известный как UI-поток, отвечает за обработку пользовательского интерфейса и взаимодействие с пользователем в Android-приложениях. Все изменения интерфейса, а также реакции на пользовательские действия должны происходить в главном потоке.
+    Проблемы
+    Блокировка главного потока: Если на главном потоке выполняются длительные операции (например, сетевые запросы, работа с базой данных), это может привести к "подвисанию" интерфейса и плохому пользовательскому опыту.
+    Выбрасывание ANR (Application Not Responding): Если главный поток заблокирован более чем на 5 секунд, система может выдать ошибку ANR.
+    Инструменты многопоточности в Android
+1. AsyncTask
+   Класс AsyncTask предлагает простой механизм для переноса трудоёмких операций в фоновый поток. Позволяет обеспечить асинхронное обновление элементов пользовательского интерфейса входе выполнения задачи, а также для вывода результатов после ее завершения.AsyncTask – это абстрактный класс, для его использования необходимо создавать класс-наследник.
+
+Использование: Выполнение фоновых задач с возможностью обновления интерфейса.
+onPreExecute(): Выполняется перед началом фоновой задачи.
+doInBackground(Params...): Выполняется в фоновом потоке.
+onProgressUpdate(Progress...): Выполняется на главном потоке для обновления прогресса.
+onPostExecute(Result): Выполняется на главном потоке после завершения фоновой задачи.
+Пример:
+
+2. Handler и HandlerThread
+   Использование: Отправка и обработка сообщений и Runnable объектов на других потоках.
+   Handler: Связывается с конкретным Looper объектом и позволяет отправлять и обрабатывать сообщения и Runnable объекты.
+   HandlerThread: Поток с собственным Looper, который можно использовать для фоновых задач.
+   Пример:
+
+3. Executor и ExecutorService
+   Использование: Управление пулом потоков для выполнения задач.
+   Executors.newSingleThreadExecutor(): Исполнитель с одним потоком.
+   Executors.newFixedThreadPool(int nThreads): Исполнитель с фиксированным числом потоков.
+   Executors.newCachedThreadPool(): Исполнитель с динамически изменяемым числом потоков.
+   Пример:
+
+4. AsyncTaskLoader и Loader
+   Использование: Выполнение длительных операций в фоне и управление их жизненным циклом.
+   LoaderManager: Управляет жизненным циклом загрузчиков и автоматической переинициализацией при изменении данных.
+   Пример:
+
+5. WorkManager
+   Использование: Планирование и выполнение задач, требующих гарантированного выполнения, таких как фоновые синхронизации и загрузки.
+   WorkManager: Рекомендуемый способ выполнения отложенных фоновых задач, которые должны гарантированно выполняться.
+   Пример:
+
+
+
+
+10. **Реализовать Java-программу в Apache NetBeans IDE, которая сохраняет в файл содержимое веб-страницы, адрес которой вводит пользователь с клавиатуры. Использование многопоточности – обязательно.**
+    ```java
+    package org.example;  
+
+import java.io.*;  
+import java.net.MalformedURLException;  
+import java.net.URL;  
+import java.util.*;  
+import java.util.concurrent.ExecutorService;  
+import java.util.concurrent.Executors;  
+  
